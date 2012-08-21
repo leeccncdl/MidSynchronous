@@ -9,12 +9,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 
+
 import android.content.Context;
 
 public class AppFileUtils {
 	
 	private static final String TAG = "TAG:AppFileUtils";
-	private static final String DOWNSOURCEFILEPATH = "MidSynchronous"+File.separator+"downwardSource"+File.separator;
+	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile";
+	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
 	public static String readFile(Context context,String fileName) {
 		
@@ -47,29 +49,33 @@ public class AppFileUtils {
 	
 	public static byte[] readFile(Context context,String fileName,long offset,int length,String mode,boolean isSourceFile) {
 		byte[] buffer = new byte[length];
-		
-		RandomAccessFile ra = null;
-		
-		try {
-			ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
+		SDFileUtils sd = new SDFileUtils();
+		if(!isSourceFile) {
+			RandomAccessFile ra = null;
+			try {
+				ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			ra.seek(offset);
-			ra.read(buffer, 0, length);	
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try {
-			ra.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				ra.seek(offset);
+				ra.read(buffer, 0, length);	
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			try {
+				ra.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			//资源文件在SD卡上
+			buffer = sd.readFromSD(UPSOURCEFILEPATH, fileName, offset, length);
 		}
 
 		return buffer;
@@ -124,8 +130,10 @@ public class AppFileUtils {
 	
 	public static void writeFile(Context context, String fileName,
 			byte[] writeByteArr, int mode,boolean isSourceFile) {
+		
+		SDFileUtils sd = new SDFileUtils();
 		if(isSourceFile) {//是资源文件，SD卡文件操作
-			
+			sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, Context.MODE_APPEND);
 		} else {//不是资源文件
 			FileOutputStream os = null;
 			try {

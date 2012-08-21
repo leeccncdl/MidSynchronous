@@ -1,8 +1,9 @@
 package cn.zytec.lee;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
+import cn.zytec.midsynchronous.utils.AppFileUtils;
+import cn.zytec.midsynchronous.utils.SDFileUtils;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -17,17 +18,23 @@ public class MidSynchronousActivity extends Activity {
        
 
         
+        //创建上行，下行资源文件夹
+        SDFileUtils sd = new SDFileUtils();
+//        sd.creatSDDir("MidSync"+File.separator+"downLoadsourceFile");
+//        sd.creatSDDir("MidSync"+File.separator+"upwardSourceFile");
         
         
+//        Test testFileName = new Test();   
+//        testFileName.addSyncDataTransferTask(null);
         
-        Test testFileName = new Test();
+        long size = AppFileUtils.getFileSize(App.getInstance(), "sourcefile1.png","r");
+        byte[] buffer = new byte[(int)size];
         
-        testFileName.addSyncDataTransferTask(null);
-
+        buffer = AppFileUtils.readFile(App.getInstance(), "sourcefile1.png", 0l, (int)size, "r", false);
+        sd.write2SD("MidSync"+File.separator+"upwardSourceFile", "sourcefile1.png", buffer, 0);
         /*************下行测试代码******************/
 //        String response = DownwardWs.DownwardRequest("lee", "lee");
 //        System.out.println(response);
-//        
 //        
 //        byte[] buffer = null;
 //        int i = 0;

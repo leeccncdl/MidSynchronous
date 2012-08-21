@@ -238,11 +238,12 @@ public class DSyncDownDataTransfer extends Thread {
 		for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
 			String key = item.getKey();
 			SyncFileDescription value = item.getValue();
-			// 调用单个文件传输方法
+			// 调用单个文件传输方法,判断是数据文件还是资源文件，使用同一的后缀判断
+			boolean isSourceFile = !key.endsWith(".sync");
 			if (!value.getAuxiliary().equals("Done")) {
 		
 				if (!inceptFile(key, value, description.getAssociateId(),
-						description,false)) {
+						description,isSourceFile)) {
 					return false;
 				}
 			}
@@ -256,8 +257,7 @@ public class DSyncDownDataTransfer extends Thread {
 	* @param fileDes
 	* @param token
 	* @param description
-	* @param isSourceFile 是否是资源文件，如果是资源文件，需要保存在SD卡目录
-	* @return     
+	* @param isSourceFile 是否是资源文件，如果是资源文件，需要保存在SD卡目录 
 	* @return boolean
 	* @throws 
 	*/ 

@@ -248,10 +248,11 @@ public class DSyncUpDataTransfer extends Thread {
 			SyncFileDescription value = item.getValue();
 			// System.out.println(key+"KKKKKKKKKKKKKKKKKKKKKKKKK");
 			// System.out.println(value+"VVVVVVVVVVVVVVVVVVVVVVVVVV");
-			// 调用单个文件传输方法
+			// 调用单个文件传输方法，判断是资源文件还是数据文件
+			boolean isSourceFile = !key.endsWith(".sync");
 			if (!value.getAuxiliary().equals("Done")) {
 				if (!transFile(key, value, description.getAssociateId(),
-						description,false)) {
+						description,isSourceFile)) {
 					return false;
 				}
 			}

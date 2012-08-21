@@ -46,15 +46,12 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		Gson gson = new Gson();
 		AppFileUtils.writeFile(App.getInstance(), DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
 	}
-	
+  
 	/** 
-	* @Title: LoadTask 
-	* @Description: TODO 加载未完成的任务
-	* 在同步任务管理器创建时，加载未完成的任务，任务来自已保存的持久化文件    
-	* @param unCompleteTask    
-	* @return boolean
+	* 从任务描述文件中加载没有执行完成的任务，并且将任务依次提交处理   
+	* @return boolean    
 	* @throws 
-	*/  
+	*/ 
 	
 	private boolean LoadTask () {
 		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.getInstance());
@@ -179,14 +176,12 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		ETaskManagerEvent event = new ETaskManagerEvent(this,description);
 		listener.taskManagerEvent(event);
 
-	}
-
+	} 
+	
 	/** 
-	* @Title: readDescriptionFile 
-	* @Description: 读取任务描述文件，返回任务描述列表文件 
+	* @Description: TODO(这里用一句话描述这个方法的作用) 
 	* @param context
-	* @return     
-	* @return TSyncTaskDescriptions
+	* @return TSyncTaskDescriptions    
 	* @throws 
 	*/ 
 	
