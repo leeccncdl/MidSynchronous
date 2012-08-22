@@ -23,6 +23,8 @@ public class DSyncUpDataTransfer extends Thread {
 	private static final String TAG = "TAG:DSyncUpDataTransferUUUUUUUUUU";
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
+	
+	private boolean isStopThread = false;
 
 	private IUpDataTransferEventListener listener;
 	private List<SyncTaskDescription> upTaskDescriptions;// 上行同步数据传输任务描述列表
@@ -36,6 +38,11 @@ public class DSyncUpDataTransfer extends Thread {
 		upTaskDescriptions.add(description);
 		System.out.println(TAG + "任务添加到上行数据传输任务列表中"
 				+ Thread.currentThread().getName());
+		//如果线程不是活动的，start
+		if(!this.isAlive()) {
+			isStopThread = false;
+			this.start();
+		}
 	}
 
 	/**
@@ -118,68 +125,24 @@ public class DSyncUpDataTransfer extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while (true) {
-			while (upTaskDescriptions.size() == 0) {
+		while (!isStopThread) {
+			while (upTaskDescriptions.size() > 0) {
+				
+				runUpDataTransfer(upTaskDescriptions.iterator());
+
 				try {
 					System.out.println(Thread.currentThread().getName() + TAG
-							+ "当前无上行同步任务，上行线程任务进入休眠状态 3s");
+							+ "当前上行同步任务执行退出，上行线程任务进入休眠状态 3s");
 					sleep(3000);
 				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} finally {
-
 				}
 			}
-			
-			//修改后的使用迭代器方式
-			runUpDataTransfer(upTaskDescriptions.iterator());
-			
-			/**********之前的方式*******************
-			SyncTaskDescription description = null;
-			Gson gson = null;
-			for (int i = 0, size = upTaskDescriptions.size(); i < size; i++) {
-				description = runUpDataTransfer(i);
-				System.out.println(TAG + "当前有上行同步任务，任务ID为："
-						+ description.getTaskId()
-						+ Thread.currentThread().getName());
-				// 任务启动事件
-				taskTansferStart(description);
-
-				gson = new Gson();
-				// 上行请求返回token
-				String token = null;
-				token = UpwardWs.UpwardRequest(gson.toJson(description), "lee");// 用户验证信息如何传入？？
-				System.out.println(TAG + "Token：" + token);
-				if(token==null) {
-					System.out.println(TAG+"Request 返回token失败，终止请求");
-					break;
-				}
-				String newTaskId = token.split(SEP)[0];
-				System.out.println(TAG + "newTaskId:" + newTaskId);
-				description.setTaskId(newTaskId);
-
-				// 将token保存在description中，任务申请完成
-				description.setAssociateId(token);
-				taskApplyComplete(description);// 任务申请完成事件
-
-				// 数据传输,返回true标识传输完毕
-				if (transmitDescriptionDataFile(description)) {// 任务文件传输
-					UpwardWs.UpwardFinish(description.getAssociateId(), true);
-					taskTransferComplete(description);// 任务传输结束事件
-					// **********当多个上行任务时，这里有可能有问题******************
-					upTaskDescriptions.remove(i);
-				} else {
-					System.out.println(TAG + "当前任务上行数据传输没有完成，已终止");
-					break;
-				}
-			}
-			// 暂时先不清空任务！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-			// upTaskDescriptions.clear();
-			暂时保留之前的处理方式********************************/
+			isStopThread = true;
 		}
-
-
 	}
+			
 
 	/** 
 	* 执行上行任务的传输过程
@@ -218,7 +181,7 @@ public class DSyncUpDataTransfer extends Thread {
 
 			// 数据传输,返回true标识传输完毕
 			if (transmitDescriptionDataFile(description)) {// 任务文件传输
-				UpwardWs.UpwardFinish(description.getAssociateId(), true);
+				UpwardWs.UpwardFinish(description.getAssociateId(), false);
 				taskTransferComplete(description);// 任务传输结束事件
 				//移除本类列表中的该任务
 				iterator.remove();
@@ -250,7 +213,9 @@ public class DSyncUpDataTransfer extends Thread {
 			// System.out.println(value+"VVVVVVVVVVVVVVVVVVVVVVVVVV");
 			// 调用单个文件传输方法，判断是资源文件还是数据文件
 			boolean isSourceFile = !key.endsWith(".sync");
+			
 			if (!value.getAuxiliary().equals("Done")) {
+				System.out.println(isSourceFile);
 				if (!transFile(key, value, description.getAssociateId(),
 						description,isSourceFile)) {
 					return false;
@@ -300,8 +265,9 @@ public class DSyncUpDataTransfer extends Thread {
 				System.out.println("LASTLENGTH" + lastlength);
 
 				byte[] bufferLast = new byte[lastlength];
+				
 				bufferLast = AppFileUtils.readFile(App.getInstance(), fileName,
-						EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",false);// 有断点相关修改
+						EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",isSourceFile);// 有断点相关修改
 				/*******************/
 				// AppFileUtils.writeFile(App.getInstance(), fileName+".t",
 				// bufferLast, Context.MODE_APPEND);
@@ -336,7 +302,7 @@ public class DSyncUpDataTransfer extends Thread {
 				buffer = AppFileUtils.readFile(App.getInstance(), fileName,
 						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
 								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
-						EVERYTIMETRANSSIZE, "r",false);// ///
+						EVERYTIMETRANSSIZE, "r",isSourceFile);// ///
 				if (UpwardWs.UpwardTransmit(
 						token,
 						fileName,

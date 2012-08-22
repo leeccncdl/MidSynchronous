@@ -2,6 +2,11 @@ package cn.zytec.midsynchronous;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import cn.zytec.lee.App;
+import cn.zytec.midsynchronous.utils.AppFileUtils;
 
 /**
    * @ClassName: TSyncTaskDescriptions
@@ -65,6 +70,8 @@ public class TSyncTaskDescriptions {
 	public void remove (String strTaskId) {
 		for (int i=0,size = arrTaskDescriptions.size();i<size;i++) {
 			if(arrTaskDescriptions.get(i).getTaskId().equals(strTaskId)) {
+				//删除数据文件方法
+//				clearDataFile(arrTaskDescriptions.get(i));
 				arrTaskDescriptions.remove(i);
 				count--;
 				return;
@@ -76,7 +83,15 @@ public class TSyncTaskDescriptions {
 		
 	}
 	
-	public void clear () {
+	public void clearDataFile (SyncTaskDescription taskDescription) {
+		Map<String, SyncFileDescription> fileInfo = taskDescription.getFileInfo();
 		
+		for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
+			String key = item.getKey();
+			
+			if(key.endsWith(".sync")) {
+				AppFileUtils.deleteFile(App.getInstance(), key);
+			}
+		}
 	}
 }

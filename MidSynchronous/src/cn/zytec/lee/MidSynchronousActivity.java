@@ -24,14 +24,9 @@ public class MidSynchronousActivity extends Activity {
 //        sd.creatSDDir("MidSync"+File.separator+"upwardSourceFile");
         
         
-//        Test testFileName = new Test();   
-//        testFileName.addSyncDataTransferTask(null);
-        
-        long size = AppFileUtils.getFileSize(App.getInstance(), "sourcefile1.png","r");
-        byte[] buffer = new byte[(int)size];
-        
-        buffer = AppFileUtils.readFile(App.getInstance(), "sourcefile1.png", 0l, (int)size, "r", false);
-        sd.write2SD("MidSync"+File.separator+"upwardSourceFile", "sourcefile1.png", buffer, 0);
+        Test testFileName = new Test();   
+        testFileName.addSyncDataTransferTask(null);
+
         /*************下行测试代码******************/
 //        String response = DownwardWs.DownwardRequest("lee", "lee");
 //        System.out.println(response);

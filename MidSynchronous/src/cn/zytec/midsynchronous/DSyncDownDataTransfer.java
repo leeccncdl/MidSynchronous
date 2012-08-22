@@ -24,6 +24,7 @@ public class DSyncDownDataTransfer extends Thread {
 	private static final String TAG = "TAG:DSyncDownDataTransferDDDDDDDDDD";
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
+	private boolean isStopThread = false;
 	private IDownDataTransferEventListener listener;
 	private List<SyncTaskDescription> downTaskDescriptions;// 下行同步数据传输任务列表
 
@@ -35,6 +36,11 @@ public class DSyncDownDataTransfer extends Thread {
 	public void addTaskToDownDataTransfer(SyncTaskDescription description) {
 		downTaskDescriptions.add(description);
 		System.out.println(TAG+"任务添加到下行任务列表中");
+		
+		if(!this.isAlive()) {
+			isStopThread = false;
+			this.start();
+		}
 	}
 
 
@@ -117,6 +123,21 @@ public class DSyncDownDataTransfer extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		while(!isStopThread) {
+			while(downTaskDescriptions.size()>0) {
+				runDownDataTransfer(downTaskDescriptions.iterator());
+				try {
+					System.out.println(TAG+ "当前下行任务退出，下行数据同步线程休眠3s"+Thread.currentThread().getName());
+					sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} 
+				
+			}
+			
+			isStopThread = true;
+		}
+		/**修改前方式
 		while (true) {
 
 			while (downTaskDescriptions.size() < 1) {
@@ -129,54 +150,8 @@ public class DSyncDownDataTransfer extends Thread {
 
 				}
 			}
-			
 			runDownDataTransfer(downTaskDescriptions.iterator());
-			
-			/*********修改前方法******
-			//当前列表里有任务，执行
-			SyncTaskDescription description = null;
-			Gson gson = null;
-			for (int i = 0, size = downTaskDescriptions.size(); i < size; i++) {
-				System.out.println(TAG
-						+ "任务下载开始啦！！！！"
-						+Thread.currentThread().getName());
-				description = downTaskDescriptions.get(i);
-				//传输开始
-				taskTansferStart(description);
-				gson = new Gson();
-				//请求
-				String jsonTask = DownwardWs.DownwardRequest(gson.toJson(description), "lee");
-				if(jsonTask==null||jsonTask.equals("")) {
-					System.out.println(TAG+"下行申请返回错误");
-					taskTransferError(description);
-					break;
-				}
-
-				String token = jsonTask.split(SEP)[0]+SEP+jsonTask.split(SEP)[1];
-//				System.out.println("++++++++++++++"+token+"++++++++++++++");
-				description.setAssociateId(token);
-				if(jsonTask.split(SEP).length == 3) {
-					SyncTaskDescription taskDescription = gson.fromJson(jsonTask.split(SEP)[2], SyncTaskDescription.class);
-					updateDescription(description,taskDescription);
-				} else {
-					System.out.println(TAG+"本次为断点续传");
-				}
-				//任务申请完成
-				taskApplyComplete(description);
-				if(tasktaskDataInceptfiles(description)) {
-					//传输完成请求
-					DownwardWs.DownwardFinish(token);
-					//传输完成事件
-					taskTransferComplete(description);
-					downTaskDescriptions.remove(i);//暂时这么处理，不严谨*****移除下行任务（更改为使用迭代器）
-				} else {
-					System.out.println(TAG+"当前下行任务数据接收意外终止");
-					taskTransferError(description);
-					break;
-				}
-			}************修改前方法结束**************/
-
-		}
+		}修改前方式结束**/
 	}
 	
 	private boolean runDownDataTransfer(Iterator<SyncTaskDescription> iterator) {

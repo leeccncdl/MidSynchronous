@@ -27,5 +27,5 @@ public interface ISyncTaskStorager {
 	
 	public boolean updateTaskState (String strTaskId, SyncTaskDescription.SynTaskState state);
 	
-	public boolean delete (String strTaskId);
+	public boolean delete (SyncTaskDescription taskDescription);
 }

@@ -1,5 +1,6 @@
 package cn.zytec.lee;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Test implements ISyncDataCollect,ISyncDataUpdate,ISyncStateMonitor 
         ArrayList<TestDao> testArr = new ArrayList<TestDao>();
         testArr.add(testObj);
         testArr.add(testObj2);
+        
         
 		Gson gson = new Gson(); 
 		String gsonString = gson.toJson(testArr);

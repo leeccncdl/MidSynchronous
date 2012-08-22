@@ -13,6 +13,7 @@ import java.util.List;
 public class StSyncStateDistribute extends Thread{
 	
 	private static final String TAG = "TAG:StSyncStateDistribute";
+	private boolean isStopThread = false;
 	
 	private IStateDistributeEventListener listener;
 	private List<SyncTaskDescription> distributeDescriptions;
@@ -34,6 +35,12 @@ public class StSyncStateDistribute extends Thread{
 			distributeDescriptions.add(description);
 		}
 		System.out.println(TAG+"任务状态分发器：添加新的任务状态列表,添加时的状态为："+description.getTaskState()+Thread.currentThread().getName());
+		
+		if(!this.isAlive()) {
+			isStopThread = false;
+			this.start();
+		}
+	
 	}
 	
 	/** 
@@ -53,6 +60,21 @@ public class StSyncStateDistribute extends Thread{
 		// TODO Auto-generated method stub
 		System.out.println(TAG+"同步状态分发线程运行！"+Thread.currentThread().getName());
 		
+		while(!isStopThread) {
+			while(distributeDescriptions.size()>1) {
+				runSyncStateDistribute(distributeDescriptions.iterator());
+				
+				try{
+					System.out.println(Thread.currentThread().getName()+"同步状态分发线程进入休眠状态");
+					sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			isStopThread = true;
+		}
+		/**修改前方法
 		while (true) {
 			
 			while(distributeDescriptions.size()<1) {
@@ -67,14 +89,9 @@ public class StSyncStateDistribute extends Thread{
 			}
 			
 			runSyncStateDistribute(distributeDescriptions.iterator());
-			/****************
-			for(int i = 0,size = distributeDescriptions.size(); i < size; i++) {
 
-				System.out.println(Thread.currentThread().getName()+"同步状态分发任务执行！！！任务名称："+distributeDescriptions.get(i).getTaskName());
-				stateDistribute(distributeDescriptions.get(i));
-			}*******************/
 			
-		}
+		}修改方法结束**/
 		
 	}
 

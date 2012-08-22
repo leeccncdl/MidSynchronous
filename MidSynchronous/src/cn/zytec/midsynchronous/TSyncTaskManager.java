@@ -153,10 +153,11 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	}
 	
 	@Override
-	public boolean delete(String strTaskId) {
+	public boolean delete(SyncTaskDescription taskDescription) {
 		// TODO Auto-generated method stub
-		if(taskDescriptions.exists(strTaskId)) {
-			taskDescriptions.remove(strTaskId);
+		if(taskDescriptions.exists(taskDescription.getTaskId())) {
+			//删除数据传输完成的文件
+			taskDescriptions.remove(taskDescription.getTaskId());
 		}
 
 		System.out.println("任务从任务管理器移除");

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-
 import android.os.Environment;
 
 public class SDFileUtils {
@@ -106,6 +105,7 @@ public class SDFileUtils {
 
 	public boolean write2SD(String dir, String fileName, byte[] bytes,
 			long offset) {
+		System.out.println("FFFFFFFFFFFfileName: "+fileName);
 		if (bytes == null) {
 			return false;
 		}
@@ -278,5 +278,14 @@ public class SDFileUtils {
 			}
 		}
 		return file;
+	}
+	
+	public long getFileSize(String dir,String fileName,String mode) {
+		long length = 0;
+		File file = new File(SDCardRoot + dir + File.separator + fileName);
+		System.out.println("EEEEEEEEEEEEE"+file.exists());
+		length = file.length();
+
+		return length;
 	}
 }

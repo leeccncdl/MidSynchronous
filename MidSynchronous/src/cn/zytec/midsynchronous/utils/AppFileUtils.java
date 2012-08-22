@@ -50,6 +50,9 @@ public class AppFileUtils {
 	public static byte[] readFile(Context context,String fileName,long offset,int length,String mode,boolean isSourceFile) {
 		byte[] buffer = new byte[length];
 		SDFileUtils sd = new SDFileUtils();
+		
+		System.out.println("AAAAAAAAAAAAAAa"+isSourceFile + fileName);
+		
 		if(!isSourceFile) {
 			RandomAccessFile ra = null;
 			try {
@@ -131,9 +134,11 @@ public class AppFileUtils {
 	public static void writeFile(Context context, String fileName,
 			byte[] writeByteArr, int mode,boolean isSourceFile) {
 		
+		
 		SDFileUtils sd = new SDFileUtils();
 		if(isSourceFile) {//是资源文件，SD卡文件操作
-			sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, Context.MODE_APPEND);
+//			sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, Context.MODE_APPEND);
+		sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, true);
 		} else {//不是资源文件
 			FileOutputStream os = null;
 			try {
@@ -163,17 +168,23 @@ public class AppFileUtils {
 		long length = 0;
 		
 		RandomAccessFile ra = null;
-		try {
-			ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
-			length = ra.length();
-			ra.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(fileName.endsWith(".sync")) {
+			try {
+				ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
+				length = ra.length();
+				ra.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			SDFileUtils sd = new SDFileUtils();
+			length = sd.getFileSize(UPSOURCEFILEPATH, fileName, mode);
 		}
+
 
 		return length;
 		

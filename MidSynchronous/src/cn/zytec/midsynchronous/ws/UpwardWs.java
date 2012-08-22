@@ -6,6 +6,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class UpwardWs {
@@ -16,6 +18,7 @@ public class UpwardWs {
 	public static String UpwardRequest (String strJsonTask, String strJsonIdentity) {
 		String token = null;
 		PostMethod postMethod = new PostMethod(HOST);
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strJsonTask", strJsonTask);
 		postData[1] = new NameValuePair("strJsonIdentity", strJsonIdentity);
@@ -50,7 +53,7 @@ public class UpwardWs {
 		
 		String returnString = null;
 		PostMethod postMethod = new PostMethod(HOST);
-		
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[5];
 		postData[0] = new NameValuePair("strToken", strToken);
 		postData[1] = new NameValuePair("fileName", fileName);
@@ -88,6 +91,7 @@ public class UpwardWs {
 
 		String btra = bTrash?"true":"false";
 		PostMethod postMethod = new PostMethod(HOST);
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strToken", strToken);
 		postData[1] = new NameValuePair("bTrash", btra);

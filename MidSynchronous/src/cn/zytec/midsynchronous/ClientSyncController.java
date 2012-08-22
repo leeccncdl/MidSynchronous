@@ -61,11 +61,12 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		taskManager = new TSyncTaskManager(this);
 		updateDataDispatch = new DSyncUpdateDataDispatch(this);
 		
-		//启动各个线程
-		upDataTransfer.start();
-		downDataTransfer.start();
-		stateDistribute.start();
-		updateDataDispatch.start();
+		//启动各个线程方式已经更改，由添加各组件任务时自动启动线程
+//		upDataTransfer.start();
+//		downDataTransfer.start();
+//		stateDistribute.start();
+//		updateDataDispatch.start();
+	
 	}
 	
 	/** 
@@ -355,7 +356,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 //		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.COMPLETION);
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.COMPLETION);//完成态
 		stateDistribute.addStateDistribute(taskDescription);
-		taskManager.delete(taskDescription.getTaskId());
+		taskManager.delete(taskDescription);
 		taskManager.update(taskDescription);///完成
 	}
 	
@@ -369,7 +370,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	private void updateComplete (SyncTaskDescription taskDescription) {
 		System.out.println(TAG+"下行任务最后被处理，删除任务信息，更新文件");
-		taskManager.delete(taskDescription.getTaskId());
+		taskManager.delete(taskDescription);
 		taskManager.update(taskDescription);//完成
 	}
 	
@@ -383,4 +384,5 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	private void updateError (SyncTaskDescription taskDescription) {
 		System.out.println(TAG+"数据已保存完成，当前客户应用没有更新");
 	}
+	
 }

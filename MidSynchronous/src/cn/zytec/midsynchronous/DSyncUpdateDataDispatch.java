@@ -14,6 +14,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	private static final String TAG = "TAG:DSyncUpdateDataDispatch";
 
+	private boolean isStopThread = false;
 	private IUpdateDataEventListener listener;	
 	private List<SyncTaskDescription> updateDataDescriptions;
 
@@ -24,6 +25,10 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	public void addUpdateDataDispatchTask (SyncTaskDescription taskDescription) {
 		updateDataDescriptions.add(taskDescription);
+		if(!this.isAlive()) {
+			isStopThread = false;
+			this.start();
+		}
 	}
 	
 	/** 
@@ -66,6 +71,23 @@ public class DSyncUpdateDataDispatch extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println(TAG+ "数据更新调度器线程运行！"+Thread.currentThread().getName());
+		while(!isStopThread) {
+			while(updateDataDescriptions.size()>0) {
+				runSyncUpdateDataDispatch(updateDataDescriptions.iterator());
+				
+				try{
+					System.out.println(TAG+"下行数据更新调度线程休眠"+Thread.currentThread().getName());
+					sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			isStopThread = true;
+		}
+		
+		/**
 		while (true) {
 			
 			while(updateDataDescriptions.size()<1) {
@@ -78,20 +100,8 @@ public class DSyncUpdateDataDispatch extends Thread {
 					
 				}
 			}
-			
 			runSyncUpdateDataDispatch(updateDataDescriptions.iterator());
-			/**************
-			SyncTaskDescription description = null;
-			for(int i = 0, size = updateDataDescriptions.size(); i < size; i++) {
-				description = updateDataDescriptions.get(i);
-				//更新执行和更新完成需要返回值，需修改
-				updateExcute(description);
-				updateComplete(description);
-				updateError(description);
-				updateDataDescriptions.remove(i);//////////////////处理不够妥当
-			}****************************/
-
-		}
+		}**/
 	}
 	
 	private boolean runSyncUpdateDataDispatch(Iterator<SyncTaskDescription> iterator) {

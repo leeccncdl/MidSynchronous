@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import cn.zytec.midsynchronous.utils.Base64;
 
@@ -27,6 +28,7 @@ public class DownwardWs {
 		String jsonTask = "";
 		
 		PostMethod postMethod = new PostMethod(HOST);
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strJsonTask", strJsonTask);
 		postData[1] = new NameValuePair("strJsonIdentity", strJsonIdentity);
@@ -41,6 +43,11 @@ public class DownwardWs {
 			
 			
 			jsonTask = postMethod.getResponseBodyAsString();
+			
+			if(jsonTask.equals("-1")||jsonTask.equals("-2")) {
+				System.out.println(TAG+"下行申请错误");
+				System.out.println(jsonTask);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,7 +75,7 @@ public class DownwardWs {
 		String response = null;
 		
 		PostMethod postMethod = new PostMethod(HOST);
-		
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[5];
 		postData[0] = new NameValuePair("strToken", strToken);
 		postData[1] = new NameValuePair("fileName", fileName);
@@ -84,6 +91,11 @@ public class DownwardWs {
 				return null;
 			}
 			response = postMethod.getResponseBodyAsString();
+			if(response.equals("-1")||response.equals("-2")) {
+				System.out.println(TAG+"下行传输错误");
+				System.out.println(response);
+			}
+			//1成功  -1验证失败  -2session过期
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,6 +122,7 @@ public class DownwardWs {
 
 		String excuteState = null;
 		PostMethod postMethod = new PostMethod(HOST);
+		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[2];
 		postData[0] = new NameValuePair("strToken", strToken);
 		postData[1] = new NameValuePair("requestType", "DownwardFinish");
@@ -122,6 +135,10 @@ public class DownwardWs {
 				return false;
 			}
 			excuteState = postMethod.getResponseBodyAsString();
+			if(excuteState.equals("-1")||excuteState.equals("-2")) {
+				System.out.println(TAG+"下行结束返回错误");
+				System.out.println(excuteState);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
