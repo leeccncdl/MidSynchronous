@@ -1,7 +1,5 @@
 package cn.zytec.midsynchronous.client;
 
-
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,11 +30,8 @@ public class CreateTaskDescription {
 	*/ 
 	
 	public static SyncTaskDescription createUpDescription(Context context,List<String> sourceFilesPaths,String jsonString) {
-
-		System.out.println(TAG+"PACKING JSONSTRING:"+jsonString);
-
+//		System.out.println(TAG+"PACKING JSONSTRING:"+jsonString);
 		String fileName = createPackingFileName();
-		System.out.println(TAG+"UPTASK DATAFILE NAME:"+fileName);
 		//将json串写入任务data文件
 		AppFileUtils.writeFile(context, fileName, jsonString,Context.MODE_PRIVATE);
 
@@ -51,12 +46,10 @@ public class CreateTaskDescription {
 		fileDes = new SyncFileDescription(fileName, AppFileUtils.getFileSize(App.getInstance(), fileName, "r"), 0, "false");
 		fileInfo.put(fileName, fileDes);
 		
-		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+//		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		SyncTaskDescription taskDescription = new SyncTaskDescription("", "associateId",007, 
-				null, "condition",time.format(new Date()), SyncTaskDescription.UPTASK, null, fileInfo);
-		
-		System.out.println(TAG+"TEST：Create taskDescription TO json:"+new Gson().toJson(taskDescription));
-
+				null, "condition",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), SyncTaskDescription.UPTASK, null, fileInfo);
+		System.out.println(TAG+"生成上行任务描述对象成功");
 		return taskDescription;
 	}
 	
