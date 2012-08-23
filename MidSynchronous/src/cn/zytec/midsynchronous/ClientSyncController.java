@@ -205,7 +205,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	private void putInTask(SyncTaskDescription description) {
 		System.out.print(TAG+"同步控制器任务提交方法执行。"+Thread.currentThread().getName());
-		if(description.getSource().equals("UP")){//上行s
+		if(description.getSource().equals("UP")){//上行
 			upDataTransfer.addTaskToUpDataTransfer(description);//添加到上行同步数据传输器
 		} else if (description.getSource().equals("DOWN")) { //下行
 			downDataTransfer.addTaskToDownDataTransfer(description);

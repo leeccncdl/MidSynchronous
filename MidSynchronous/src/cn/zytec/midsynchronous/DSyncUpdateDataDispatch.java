@@ -23,9 +23,9 @@ public class DSyncUpdateDataDispatch extends Thread {
 	}
 	
 	public void addUpdateDataDispatchTask (SyncTaskDescription taskDescription) {
-		updateDataDescriptions.add(taskDescription);
 		synchronized(this) {
 			if(this.getState() == Thread.State.WAITING) {
+				updateDataDescriptions.add(taskDescription);
 				this.notify();
 			}
 		}
@@ -85,21 +85,6 @@ public class DSyncUpdateDataDispatch extends Thread {
 			}
 		}
 		
-		/**
-		while (true) {
-			
-			while(updateDataDescriptions.size()<1) {
-				try{
-					System.out.println(TAG+"下行数据更新调度线程休眠"+Thread.currentThread().getName());
-					sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} finally {
-					
-				}
-			}
-			runSyncUpdateDataDispatch(updateDataDescriptions.iterator());
-		}**/
 	}
 	
 	private boolean runSyncUpdateDataDispatch(Iterator<SyncTaskDescription> iterator) {

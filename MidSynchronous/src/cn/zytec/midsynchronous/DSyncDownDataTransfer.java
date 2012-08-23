@@ -33,11 +33,10 @@ public class DSyncDownDataTransfer extends Thread {
 	}
 
 	public void addTaskToDownDataTransfer(SyncTaskDescription description) {
-		downTaskDescriptions.add(description);
-		System.out.println(TAG+"任务添加到下行任务列表中");
-		
 		synchronized(this) {
 			if(this.getState() == Thread.State.WAITING) {
+				downTaskDescriptions.add(description);
+				System.out.println(TAG+"任务添加到下行任务列表中");
 				this.notify();
 			}
 		}

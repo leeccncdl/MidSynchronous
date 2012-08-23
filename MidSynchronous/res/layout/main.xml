@@ -8,5 +8,26 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <Button 
+            android:id="@+id/add_upTask"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_upTask"/>
+         <Button 
+            android:id="@+id/add_downTask"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_downTask"/>
+         <Button 
+            android:id="@+id/excute_Task"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/excute_Task"/>
+    </LinearLayout>
 
 </LinearLayout>

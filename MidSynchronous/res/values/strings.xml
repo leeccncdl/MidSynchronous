@@ -3,5 +3,8 @@
 
     <string name="hello">Hello World, MidSynchronousActivity!</string>
     <string name="app_name">MidSynchronous</string>
+    <string name="add_upTask">添加一个上行任务</string>
+    <string name="add_downTask">添加一个下行任务</string>
+    <string name="excute_Task">执行中间件未完成的任务</string>
 
 </resources>

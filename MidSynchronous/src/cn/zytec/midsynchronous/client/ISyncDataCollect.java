@@ -1,6 +1,6 @@
 package cn.zytec.midsynchronous.client;
 
-import cn.zytec.midsynchronous.SyncTaskDescription;
+import java.util.List;
 
 /**
    * 同步数据收集接口
@@ -9,6 +9,6 @@ import cn.zytec.midsynchronous.SyncTaskDescription;
    */
 public interface ISyncDataCollect {
 	
-	public void addSyncDataTransferTask (SyncTaskDescription taskDescription);
+	public void addSyncDataTransferTask (String taskDataString,List<String> sourceFiles);
 
 }

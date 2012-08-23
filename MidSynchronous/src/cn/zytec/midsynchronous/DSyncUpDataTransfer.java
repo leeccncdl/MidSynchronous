@@ -33,14 +33,13 @@ public class DSyncUpDataTransfer extends Thread {
 	}
 
 	public void addTaskToUpDataTransfer(SyncTaskDescription description) {
-		upTaskDescriptions.add(description);
-		System.out.println(TAG + "任务添加到上行数据传输任务列表中"
-				+ Thread.currentThread().getName());
-
 		synchronized (this) {
 			if(this.getState() == Thread.State.WAITING) {
-				System.out.println(TAG+"IMRUNNING!!!!!");
-		
+				
+				upTaskDescriptions.add(description);
+				System.out.println(TAG + "任务添加到上行数据传输任务列表中"
+						+ Thread.currentThread().getName());
+
 				this.notify();
 			}
 		}
