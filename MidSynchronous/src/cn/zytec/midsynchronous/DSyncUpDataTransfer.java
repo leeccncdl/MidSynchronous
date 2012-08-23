@@ -24,8 +24,6 @@ public class DSyncUpDataTransfer extends Thread {
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
 	
-	private boolean isStopThread = false;
-
 	private IUpDataTransferEventListener listener;
 	private List<SyncTaskDescription> upTaskDescriptions;// 上行同步数据传输任务描述列表
 
@@ -38,10 +36,13 @@ public class DSyncUpDataTransfer extends Thread {
 		upTaskDescriptions.add(description);
 		System.out.println(TAG + "任务添加到上行数据传输任务列表中"
 				+ Thread.currentThread().getName());
-		//如果线程不是活动的，start
-		if(!this.isAlive()) {
-			isStopThread = false;
-			this.start();
+
+		synchronized (this) {
+			if(this.getState() == Thread.State.WAITING) {
+				System.out.println(TAG+"IMRUNNING!!!!!");
+		
+				this.notify();
+			}
 		}
 	}
 
@@ -125,21 +126,18 @@ public class DSyncUpDataTransfer extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while (!isStopThread) {
-			while (upTaskDescriptions.size() > 0) {
-				
-				runUpDataTransfer(upTaskDescriptions.iterator());
-
+		while (true) {
+			synchronized(this) {			
+				while (upTaskDescriptions.size() > 0) {		
+					runUpDataTransfer(upTaskDescriptions.iterator());
+				}
 				try {
-					System.out.println(Thread.currentThread().getName() + TAG
-							+ "当前上行同步任务执行退出，上行线程任务进入休眠状态 3s");
-					sleep(3000);
+					this.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			isStopThread = true;
 		}
 	}
 			

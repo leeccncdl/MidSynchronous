@@ -62,10 +62,10 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		updateDataDispatch = new DSyncUpdateDataDispatch(this);
 		
 		//启动各个线程方式已经更改，由添加各组件任务时自动启动线程
-//		upDataTransfer.start();
-//		downDataTransfer.start();
-//		stateDistribute.start();
-//		updateDataDispatch.start();
+		upDataTransfer.start();
+		downDataTransfer.start();
+		stateDistribute.start();
+		updateDataDispatch.start();
 	
 	}
 	

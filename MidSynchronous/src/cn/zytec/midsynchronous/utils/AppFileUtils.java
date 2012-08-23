@@ -15,7 +15,7 @@ import android.content.Context;
 public class AppFileUtils {
 	
 	private static final String TAG = "TAG:AppFileUtils";
-	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile";
+	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile"+File.separator;
 	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
 	public static String readFile(Context context,String fileName) {
@@ -50,8 +50,6 @@ public class AppFileUtils {
 	public static byte[] readFile(Context context,String fileName,long offset,int length,String mode,boolean isSourceFile) {
 		byte[] buffer = new byte[length];
 		SDFileUtils sd = new SDFileUtils();
-		
-		System.out.println("AAAAAAAAAAAAAAa"+isSourceFile + fileName);
 		
 		if(!isSourceFile) {
 			RandomAccessFile ra = null;
@@ -132,13 +130,13 @@ public class AppFileUtils {
 	*/ 
 	
 	public static void writeFile(Context context, String fileName,
-			byte[] writeByteArr, int mode,boolean isSourceFile) {
+			byte[] writeByteArr, int mode,boolean isSourceFile,String sourceFileDir) {
 		
 		
 		SDFileUtils sd = new SDFileUtils();
 		if(isSourceFile) {//是资源文件，SD卡文件操作
 //			sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, Context.MODE_APPEND);
-		sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, true);
+		sd.write2SD(DOWNSOURCEFILEPATH+sourceFileDir, fileName, writeByteArr, true);
 		} else {//不是资源文件
 			FileOutputStream os = null;
 			try {

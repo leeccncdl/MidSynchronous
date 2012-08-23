@@ -1,6 +1,7 @@
 package cn.zytec.midsynchronous.client;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,7 +51,6 @@ public class CreateTaskDescription {
 		fileDes = new SyncFileDescription(fileName, AppFileUtils.getFileSize(App.getInstance(), fileName, "r"), 0, "false");
 		fileInfo.put(fileName, fileDes);
 		
-		
 		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		SyncTaskDescription taskDescription = new SyncTaskDescription("", "associateId",007, 
 				null, "condition",time.format(new Date()), SyncTaskDescription.UPTASK, null, fileInfo);
@@ -77,7 +77,7 @@ public class CreateTaskDescription {
 	
 	
 	/** 
-	* 生成打包数据文件的文件名，命名方式为  UP_+ 生成时间的字符串 + .sync    
+	* 生成打包数据文件的文件名，命名方式为  UP_+ 生成时间的字符串 + .datafile    
 	* @return String 返回生成的文件名
 	* @throws 
 	*/ 
@@ -87,6 +87,6 @@ public class CreateTaskDescription {
 		Calendar c = Calendar.getInstance();
 		
 		return "UP_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+
-		c.get(Calendar.HOUR_OF_DAY)+c.get(Calendar.MINUTE)+c.get(Calendar.SECOND)+c.get(Calendar.MILLISECOND)+".sync";
+		c.get(Calendar.HOUR_OF_DAY)+c.get(Calendar.MINUTE)+c.get(Calendar.SECOND)+c.get(Calendar.MILLISECOND)+".datafile";
 	}
 }

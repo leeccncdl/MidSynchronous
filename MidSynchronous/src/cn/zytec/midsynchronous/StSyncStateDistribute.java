@@ -13,7 +13,7 @@ import java.util.List;
 public class StSyncStateDistribute extends Thread{
 	
 	private static final String TAG = "TAG:StSyncStateDistribute";
-	private boolean isStopThread = false;
+	private volatile boolean isStopThread = false;
 	
 	private IStateDistributeEventListener listener;
 	private List<SyncTaskDescription> distributeDescriptions;
@@ -36,9 +36,10 @@ public class StSyncStateDistribute extends Thread{
 		}
 		System.out.println(TAG+"任务状态分发器：添加新的任务状态列表,添加时的状态为："+description.getTaskState()+Thread.currentThread().getName());
 		
-		if(!this.isAlive()) {
-			isStopThread = false;
-			this.start();
+		synchronized (this) {
+			if(this.getState() == Thread.State.WAITING) {
+				this.notify();
+			}
 		}
 	
 	}
@@ -58,22 +59,25 @@ public class StSyncStateDistribute extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println(TAG+"同步状态分发线程运行！"+Thread.currentThread().getName());
+		System.out.println(TAG+"同步状态分发线程运行！"+!isStopThread+Thread.currentThread().getName());
 		
-		while(!isStopThread) {
-			while(distributeDescriptions.size()>1) {
-				runSyncStateDistribute(distributeDescriptions.iterator());
-				
-				try{
-					System.out.println(Thread.currentThread().getName()+"同步状态分发线程进入休眠状态");
-					sleep(3000);
+		while(true) {
+			synchronized(this) {
+				System.out.println("**********************************");
+				while(distributeDescriptions.size()>1) {
+					runSyncStateDistribute(distributeDescriptions.iterator());
+				}
+				try {
+					this.wait();
 				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			
-			isStopThread = true;
+
+
 		}
+	
 		/**修改前方法
 		while (true) {
 			
@@ -90,11 +94,9 @@ public class StSyncStateDistribute extends Thread{
 			
 			runSyncStateDistribute(distributeDescriptions.iterator());
 
-			
 		}修改方法结束**/
 		
 	}
-
 	private boolean runSyncStateDistribute(Iterator<SyncTaskDescription> iterator) {
 		SyncTaskDescription description = null;
 		while(iterator.hasNext()) {
@@ -103,8 +105,7 @@ public class StSyncStateDistribute extends Thread{
 			stateDistribute(description);
 			iterator.remove();
 		}
-		
-		
+
 		return true;
 	}
 }

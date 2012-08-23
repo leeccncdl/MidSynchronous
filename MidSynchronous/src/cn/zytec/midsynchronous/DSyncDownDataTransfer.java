@@ -24,7 +24,6 @@ public class DSyncDownDataTransfer extends Thread {
 	private static final String TAG = "TAG:DSyncDownDataTransferDDDDDDDDDD";
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
-	private boolean isStopThread = false;
 	private IDownDataTransferEventListener listener;
 	private List<SyncTaskDescription> downTaskDescriptions;// 下行同步数据传输任务列表
 
@@ -37,9 +36,10 @@ public class DSyncDownDataTransfer extends Thread {
 		downTaskDescriptions.add(description);
 		System.out.println(TAG+"任务添加到下行任务列表中");
 		
-		if(!this.isAlive()) {
-			isStopThread = false;
-			this.start();
+		synchronized(this) {
+			if(this.getState() == Thread.State.WAITING) {
+				this.notify();
+			}
 		}
 	}
 
@@ -123,19 +123,19 @@ public class DSyncDownDataTransfer extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while(!isStopThread) {
-			while(downTaskDescriptions.size()>0) {
-				runDownDataTransfer(downTaskDescriptions.iterator());
+		while(true) {
+			synchronized(this) {
+				while(downTaskDescriptions.size()>0) {
+					runDownDataTransfer(downTaskDescriptions.iterator());
+				}
 				try {
-					System.out.println(TAG+ "当前下行任务退出，下行数据同步线程休眠3s"+Thread.currentThread().getName());
-					sleep(3000);
+					this.wait();
 				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} 
-				
+				}
 			}
-			
-			isStopThread = true;
+
 		}
 		/**修改前方式
 		while (true) {
@@ -253,7 +253,7 @@ public class DSyncDownDataTransfer extends Thread {
 
 			if (buffer!=null && buffer.length != 0) {
 				AppFileUtils.writeFile(App.getInstance(), fileName,
-						buffer, Context.MODE_APPEND,isSourceFile);
+						buffer, Context.MODE_APPEND,isSourceFile,description.getTaskId());
 				if(buffer.length != EVERYTIMETRANSSIZE) {
 					fileDes.setAuxiliary("Done");
 					taskDataIncept(description);

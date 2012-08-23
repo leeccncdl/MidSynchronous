@@ -14,20 +14,20 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	private static final String TAG = "TAG:DSyncUpdateDataDispatch";
 
-	private boolean isStopThread = false;
 	private IUpdateDataEventListener listener;	
 	private List<SyncTaskDescription> updateDataDescriptions;
 
-	public DSyncUpdateDataDispatch(ClientSyncController c) {
+	public DSyncUpdateDataDispatch (ClientSyncController c) {
 		this.listener = c;
 		updateDataDescriptions = new ArrayList<SyncTaskDescription> ();
 	}
 	
 	public void addUpdateDataDispatchTask (SyncTaskDescription taskDescription) {
 		updateDataDescriptions.add(taskDescription);
-		if(!this.isAlive()) {
-			isStopThread = false;
-			this.start();
+		synchronized(this) {
+			if(this.getState() == Thread.State.WAITING) {
+				this.notify();
+			}
 		}
 	}
 	
@@ -71,20 +71,18 @@ public class DSyncUpdateDataDispatch extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println(TAG+ "数据更新调度器线程运行！"+Thread.currentThread().getName());
-		while(!isStopThread) {
-			while(updateDataDescriptions.size()>0) {
-				runSyncUpdateDataDispatch(updateDataDescriptions.iterator());
-				
-				try{
-					System.out.println(TAG+"下行数据更新调度线程休眠"+Thread.currentThread().getName());
-					sleep(3000);
+		while(true) {
+			synchronized(this) {	
+				while(updateDataDescriptions.size()>0) {
+					runSyncUpdateDataDispatch(updateDataDescriptions.iterator());
+				}
+				try {
+					this.wait();
 				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
-			
-			isStopThread = true;
 		}
 		
 		/**

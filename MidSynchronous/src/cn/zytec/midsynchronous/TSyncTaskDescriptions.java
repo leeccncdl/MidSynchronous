@@ -20,6 +20,14 @@ public class TSyncTaskDescriptions {
 	private int count;
 	private List<SyncTaskDescription> arrTaskDescriptions;
 	
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public void setArrTaskDescriptions(List<SyncTaskDescription> arrTaskDescriptions) {
+		this.arrTaskDescriptions = arrTaskDescriptions;
+	}
+
 	public TSyncTaskDescriptions () {
 		arrTaskDescriptions = new ArrayList<SyncTaskDescription> (); 
 		count = 0;

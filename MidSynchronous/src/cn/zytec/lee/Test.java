@@ -38,24 +38,21 @@ public class Test implements ISyncDataCollect,ISyncDataUpdate,ISyncStateMonitor 
         testArr.add(testObj);
         testArr.add(testObj2);
         
-        
 		Gson gson = new Gson(); 
 		String gsonString = gson.toJson(testArr);
         List<String> sourceFiles = new ArrayList<String>();
         sourceFiles.add("sourcefile1.png");
         sourceFiles.add("sourcefile2.JPG");
         //添加一个上行任务
-        client.initSyncUpDataTask(CreateTaskDescription.createUpDescription(App.getInstance(), sourceFiles, gsonString));
+//        client.initSyncUpDataTask(CreateTaskDescription.createUpDescription(App.getInstance(), sourceFiles, gsonString));
         //添加一个下行任务
         client.initSyncDownDataTask(CreateTaskDescription.createDownDescription("condition"));
-	
 	}
 
 	@Override
 	public void clientDataUpdate(String dataFilepath) {
 		// TODO Auto-generated method stub
 	}
-
 
 	@Override
 	public void clientStateUpdate(SyncTaskDescription.SynTaskState taskState) {

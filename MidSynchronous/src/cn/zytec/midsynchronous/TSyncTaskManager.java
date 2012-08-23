@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 public class TSyncTaskManager implements ISyncTaskStorager {
 	
 	private static final String TAG = "TAG:TSyncTaskManagerMMMMMMMMMM";
-	private static final String DESCRIPTIONFILENAME = "Description.des";
+	private static final String DESCRIPTIONFILENAME = "Description.taskfile";
 	
 	private ITaskManagerEventListener listener;
 	private TSyncTaskDescriptions taskDescriptions;
@@ -51,14 +51,16 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	* 从任务描述文件中加载没有执行完成的任务，并且将任务依次提交处理   
 	* @return boolean    
 	* @throws 
-	*/ 
+	*/  
 	
 	private boolean LoadTask () {
 		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.getInstance());
-		List<SyncTaskDescription> arrTaskDescriptions = loadTasks.getArrTaskDescriptions();
-		System.out.println(TAG+"加载任务列表文件 任务数目SIZE="+arrTaskDescriptions.size());
-		if(arrTaskDescriptions.size()!=0) {
-			for (SyncTaskDescription syncTaskDescription : arrTaskDescriptions) {
+		taskDescriptions.setArrTaskDescriptions(loadTasks.getArrTaskDescriptions());
+		
+		System.out.println(TAG+"加载任务列表文件 任务数目SIZE="+taskDescriptions.getArrTaskDescriptions().size());
+		if(taskDescriptions.getArrTaskDescriptions().size()!=0) {
+			taskDescriptions.setCount(taskDescriptions.getArrTaskDescriptions().size());
+			for (SyncTaskDescription syncTaskDescription : taskDescriptions.getArrTaskDescriptions()) {
 				putinTask(syncTaskDescription);
 			}
 		}
