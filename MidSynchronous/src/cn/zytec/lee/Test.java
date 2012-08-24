@@ -45,6 +45,7 @@ public class Test implements ISyncDataCollect,ISyncDataUpdate,ISyncStateMonitor 
 		ClientSyncController client = ClientSyncController.getClientSyncControllerInstance();
         client.registSyncStateMonitor(this);
         client.registSyncDataUpdate(this);
+        client.activeTask();
 	}
 	@Override
 	public void clientDataUpdate(String dataFilepath) {

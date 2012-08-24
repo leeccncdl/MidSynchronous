@@ -125,7 +125,14 @@ public class DSyncDownDataTransfer extends Thread {
 		while(true) {
 			synchronized(this) {
 				while(downTaskDescriptions.size()>0) {
-					runDownDataTransfer(downTaskDescriptions.iterator());
+					if(runDownDataTransfer(downTaskDescriptions.iterator()) == false) {
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 				try {
 					this.wait();

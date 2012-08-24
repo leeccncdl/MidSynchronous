@@ -13,8 +13,6 @@ import cn.zytec.midsynchronous.SyncFileDescription;
 import cn.zytec.midsynchronous.SyncTaskDescription;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 
-import com.google.gson.Gson;
-
 public class CreateTaskDescription {
 	
 	private static final String TAG = "TAG:CreateTaskDescription";

@@ -15,6 +15,7 @@ import android.content.Context;
 public class AppFileUtils {
 	
 	private static final String TAG = "TAG:AppFileUtils";
+	public static final String FILETAG = ".datafile";
 	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile"+File.separator;
 	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
@@ -166,7 +167,7 @@ public class AppFileUtils {
 		long length = 0;
 		
 		RandomAccessFile ra = null;
-		if(fileName.endsWith(".sync")) {
+		if(fileName.endsWith(FILETAG)) {
 			try {
 				ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
 				length = ra.length();

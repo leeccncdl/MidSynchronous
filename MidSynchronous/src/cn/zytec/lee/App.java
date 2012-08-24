@@ -10,8 +10,6 @@ public class App extends Application {
         return instance;
     }
 
-
-	
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub

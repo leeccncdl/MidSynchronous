@@ -12,7 +12,7 @@ import android.widget.Button;
 
 
 public class MidSynchronousActivity extends Activity {
-    /** Called when the activity is first created. */
+
 	Thread th;
     
     Button b1;;
@@ -34,16 +34,15 @@ public class MidSynchronousActivity extends Activity {
 		final String gsonString = gson.toJson(testArr);
         final List<String> sourceFiles = new ArrayList<String>();
         sourceFiles.add("sourcefile1.png");
-        sourceFiles.add("sourcefile2.JPG");
+//        sourceFiles.add("sourcefile2.JPG");
         /********************模拟上行同步数据结束*******************/
-        
 
         b1 = (Button)findViewById(R.id.add_upTask);
         b2 = (Button)findViewById(R.id.add_downTask);
         b3 = (Button)findViewById(R.id.excute_Task);
         
         final Test t = new Test();
-        
+
         b1.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -51,7 +50,7 @@ public class MidSynchronousActivity extends Activity {
 				// TODO Auto-generated method stub
 		        th = new Thread() {
 					public void run() {
-		                t.addSyncDataTransferTask(gsonString,sourceFiles);
+						t.addSyncDataTransferTask(gsonString,sourceFiles);
 		                System.out.println("$$$$$$$$$$上行任务启动线程执行完毕$$$$$$$$$$");
 					}
 		        };

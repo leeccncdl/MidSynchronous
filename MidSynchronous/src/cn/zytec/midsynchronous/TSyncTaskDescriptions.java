@@ -72,7 +72,7 @@ public class TSyncTaskDescriptions {
 		System.out.println(Thread.currentThread().getName()+"TSyncTaskDescriptions:任务添加到任务列表中，并且写入任务列表持久化文件中");
 		//写入任务持久化文件 应该单独写一个接口，在这调用下。因为任务状态变化的时候同样也要写入任务持久化文件
 	}
-	
+	  
 
 	
 	public void remove (String strTaskId) {
@@ -97,7 +97,7 @@ public class TSyncTaskDescriptions {
 		for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
 			String key = item.getKey();
 			
-			if(key.endsWith(".sync")) {
+			if(key.endsWith(AppFileUtils.FILETAG)) {
 				AppFileUtils.deleteFile(App.getInstance(), key);
 			}
 		}

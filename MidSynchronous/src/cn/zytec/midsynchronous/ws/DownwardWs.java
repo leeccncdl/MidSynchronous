@@ -3,6 +3,7 @@ package cn.zytec.midsynchronous.ws;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -12,7 +13,7 @@ import cn.zytec.midsynchronous.utils.Base64;
 public class DownwardWs {
 	
 	private static final String HOST = "http://192.168.4.117:8080/MidSynchronous/servlet/ServletEntrance";
-	
+	private static final int TIMEOUT = 10000;
 	private static HttpClient httpclient = new HttpClient();
 	private static final String TAG = "TAG:DownwardWs";
 	
@@ -22,11 +23,12 @@ public class DownwardWs {
 	* @param strJsonIdentity 用户身份信息   
 	* @return String 下行同步令牌以及下行同步数据包文件的尺寸
 	* @throws 
-	*/ 
+	*/
 	
 	public static String DownwardRequest (String strJsonTask, String strJsonIdentity) {
 		String jsonTask = "";
-		
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
 		PostMethod postMethod = new PostMethod(HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
@@ -36,11 +38,10 @@ public class DownwardWs {
 		postMethod.addParameters(postData);
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
-			if(statusCode!=200) {
+			if(statusCode != HttpStatus.SC_OK) {
 				System.out.println(TAG+"*********************http 返回错误");
 				return "";
 			}
-			
 			
 			jsonTask = postMethod.getResponseBodyAsString();
 			
@@ -50,6 +51,7 @@ public class DownwardWs {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
@@ -70,7 +72,8 @@ public class DownwardWs {
 	public static byte[] DownwardTransmit (String strToken,String fileName, long lOffset, long lLength) {
 		
 		System.out.println(TAG+" strToken:"+strToken+" Offset:"+lOffset+"~~~~~~");
-		
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
 		byte[] byteArrayData = null;
 		String response = null;
 		
@@ -86,7 +89,7 @@ public class DownwardWs {
 		
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
-			if(statusCode!=200) {
+			if(statusCode != HttpStatus.SC_OK) {
 				System.out.println(TAG+"*********************http 返回错误");
 				return null;
 			}
@@ -98,6 +101,7 @@ public class DownwardWs {
 			//1成功  -1验证失败  -2session过期
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
@@ -119,7 +123,8 @@ public class DownwardWs {
 	*/ 
 	
 	public static boolean DownwardFinish (String strToken) {
-
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
 		String excuteState = null;
 		PostMethod postMethod = new PostMethod(HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
@@ -130,7 +135,7 @@ public class DownwardWs {
 		
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
-			if(statusCode!=200) {
+			if(statusCode != HttpStatus.SC_OK) {
 				System.out.println(TAG+"finish方法*********************http 返回错误");
 				return false;
 			}
@@ -141,6 +146,7 @@ public class DownwardWs {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();

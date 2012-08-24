@@ -45,6 +45,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		TSyncTaskDescriptions taskDescriptions = new TSyncTaskDescriptions();
 		Gson gson = new Gson();
 		AppFileUtils.writeFile(App.getInstance(), DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
+		
 	}
   
 	/** 
@@ -53,14 +54,13 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	* @throws 
 	*/  
 	
-	private boolean LoadTask () {
+	public boolean LoadTask () {
 		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.getInstance());
-		taskDescriptions.setArrTaskDescriptions(loadTasks.getArrTaskDescriptions());
-		
-		System.out.println(TAG+"加载任务列表文件 任务数目SIZE="+taskDescriptions.getArrTaskDescriptions().size());
-		if(taskDescriptions.getArrTaskDescriptions().size()!=0) {
-			taskDescriptions.setCount(taskDescriptions.getArrTaskDescriptions().size());
-			for (SyncTaskDescription syncTaskDescription : taskDescriptions.getArrTaskDescriptions()) {
+		taskDescriptions.getArrTaskDescriptions().clear();//添加之前清空内存中的可能存在的任务
+		if(loadTasks.getArrTaskDescriptions().size()!=0) {
+			loadTasks.setCount(loadTasks.getArrTaskDescriptions().size());
+			for (SyncTaskDescription syncTaskDescription : loadTasks.getArrTaskDescriptions()) {
+				taskDescriptions.add(syncTaskDescription);
 				putinTask(syncTaskDescription);
 			}
 		}
@@ -79,7 +79,9 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		
 		taskDescriptions.add(description);
 		//创建任务唯一的入口，将当前任务列表内容写入任务描述文件，每次重新写入
+
 		AppFileUtils.writeFile(App.getInstance(),DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);	
+
 		//提交任务事件，在主控制器中具体处理。添加一个任务，就应该提交一个任务
 		putinTask(description);
 	}
@@ -108,7 +110,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		// TODO Auto-generated method stub
 		System.out.println(TAG+"UPDATE********************************");
 		AppFileUtils.writeFile(App.getInstance(),DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
-		
 		return true;
 	}
 
@@ -214,7 +215,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 			e.printStackTrace();
 		}
 		TSyncTaskDescriptions taskDescriptions = gson.fromJson(sb.toString(), TSyncTaskDescriptions.class);
-
 		return taskDescriptions;
 		
 	}

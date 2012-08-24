@@ -69,6 +69,17 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	}
 	
+
+	/** 
+	* 执行任务文件中未执行完的任务方法    
+	* @return void
+	* @throws 
+	*/ 
+	
+	public void activeTask() {
+		taskManager.LoadTask();
+	}
+	
 	/** 
 	* 创建上行同步任务，使用传入的任务描述对象，由控制任务管理器创建该任务 
 	* @param taskDescription 任务描述对象  

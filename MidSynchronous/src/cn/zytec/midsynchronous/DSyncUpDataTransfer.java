@@ -128,7 +128,14 @@ public class DSyncUpDataTransfer extends Thread {
 		while (true) {
 			synchronized(this) {			
 				while (upTaskDescriptions.size() > 0) {		
-					runUpDataTransfer(upTaskDescriptions.iterator());
+					if(runUpDataTransfer(upTaskDescriptions.iterator()) == false) {//执行发生错误
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 				try {
 					this.wait();
@@ -206,10 +213,8 @@ public class DSyncUpDataTransfer extends Thread {
 		for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
 			String key = item.getKey();
 			SyncFileDescription value = item.getValue();
-			// System.out.println(key+"KKKKKKKKKKKKKKKKKKKKKKKKK");
-			// System.out.println(value+"VVVVVVVVVVVVVVVVVVVVVVVVVV");
 			// 调用单个文件传输方法，判断是资源文件还是数据文件
-			boolean isSourceFile = !key.endsWith(".sync");
+			boolean isSourceFile = !key.endsWith(AppFileUtils.FILETAG);
 			
 			if (!value.getAuxiliary().equals("Done")) {
 				System.out.println(isSourceFile);
@@ -252,6 +257,7 @@ public class DSyncUpDataTransfer extends Thread {
 				- transTimes;// 有断点相关修改
 
 		System.out.println(TAG + "需要传输的次数：" + times);
+		System.out.println(TAG + "文件名：" + fileName);
 		System.out.println("INT" + (int) times);
 
 		for (int i = 0; i < times; i++) {
