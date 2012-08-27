@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import android.content.Context;
 
 import cn.zytec.lee.App;
+import cn.zytec.lee.AppLogger;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 import cn.zytec.midsynchronous.ws.DownwardWs;
 
@@ -21,7 +22,8 @@ import cn.zytec.midsynchronous.ws.DownwardWs;
  * @modify date: 2012-6-27 下午02:41:05
  */
 public class DSyncDownDataTransfer extends Thread {
-	private static final String TAG = "TAG:DSyncDownDataTransferDDDDDDDDDD";
+	private AppLogger log = AppLogger.getLogger("DSyncDownDataTransfer");
+
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
 	private IDownDataTransferEventListener listener;
@@ -36,7 +38,9 @@ public class DSyncDownDataTransfer extends Thread {
 		synchronized(this) {
 			if(this.getState() == Thread.State.WAITING) {
 				downTaskDescriptions.add(description);
-				System.out.println(TAG+"任务添加到下行任务列表中");
+				if(log.isDebugEnabled()) {
+					log.debug("任务添加到下行任务列表中");
+				}
 				this.notify();
 			}
 		}
@@ -166,16 +170,20 @@ public class DSyncDownDataTransfer extends Thread {
 		
 		while(iterator.hasNext()) {
 			description = iterator.next();
-			System.out.println(TAG
-					+ "任务下载开始啦！！！！"
-					+Thread.currentThread().getName());
+			if(log.isDebugEnabled()) {
+				log.debug("任务下载开始！"+Thread.currentThread().getName());
+			}
+
 			//传输开始
 			taskTansferStart(description);
 			gson = new Gson();
 			//请求
 			String jsonTask = DownwardWs.DownwardRequest(gson.toJson(description), "lee");
 			if(jsonTask==null||jsonTask.equals("")) {
-				System.out.println(TAG+"下行申请返回错误");
+				if(log.isDebugEnabled()) {
+					log.debug("下行申请返回错误");
+				}
+
 				taskTransferError(description);
 				return false;
 			}
@@ -187,7 +195,9 @@ public class DSyncDownDataTransfer extends Thread {
 				SyncTaskDescription taskDescription = gson.fromJson(jsonTask.split(SEP)[2], SyncTaskDescription.class);
 				updateDescription(description,taskDescription);
 			} else {
-				System.out.println(TAG+"本次为断点续传");
+				if(log.isDebugEnabled()) {
+					log.debug("本次为断点续传");
+				}
 			}
 			//任务申请完成
 			taskApplyComplete(description);
@@ -198,7 +208,9 @@ public class DSyncDownDataTransfer extends Thread {
 				taskTransferComplete(description);
 				iterator.remove();//在本类的任务列表中移除该任务
 			} else {
-				System.out.println(TAG+"当前下行任务数据接收意外终止");
+				if(log.isDebugEnabled()) {
+					log.debug("当前下行任务数据接收意外终止");
+				}
 				taskTransferError(description);
 				return false;
 			}
@@ -220,7 +232,7 @@ public class DSyncDownDataTransfer extends Thread {
 			String key = item.getKey();
 			SyncFileDescription value = item.getValue();
 			// 调用单个文件传输方法,判断是数据文件还是资源文件，使用同一的后缀判断
-			boolean isSourceFile = !key.endsWith(".sync");
+			boolean isSourceFile = !key.endsWith(AppFileUtils.FILETAG);
 			if (!value.getAuxiliary().equals("Done")) {
 		
 				if (!inceptFile(key, value, description.getAssociateId(),
@@ -253,7 +265,7 @@ public class DSyncDownDataTransfer extends Thread {
 		byte[] buffer = null;
 		int alreadyTransTimes = (int)transferSize/EVERYTIMETRANSSIZE;
 		while (true) {
-			System.out.println(TAG+fileName+"  Offset"+((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1));
+			System.out.println(fileName+"  Offset"+((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1));
 			buffer = DownwardWs.DownwardTransmit(token,fileName,
 					((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1), EVERYTIMETRANSSIZE);
 

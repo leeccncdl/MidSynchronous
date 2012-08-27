@@ -10,20 +10,17 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 
 
+
 import android.content.Context;
 
 public class AppFileUtils {
-	
-	private static final String TAG = "TAG:AppFileUtils";
+//	private AppLogger log = AppLogger.getLogger("AppFileUtils");
 	public static final String FILETAG = ".datafile";
 	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile"+File.separator;
 	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
 	public static String readFile(Context context,String fileName) {
-		
-		
 		StringBuffer sb = new StringBuffer();
-		
 		FileInputStream ins = null;
 		try {
 
@@ -87,7 +84,6 @@ public class AppFileUtils {
 			String writeString, int mode) {
 
 		FileOutputStream os = null;
-
 		try {
 			os = context.openFileOutput(fileName, mode);
 
@@ -97,11 +93,10 @@ public class AppFileUtils {
 			e.printStackTrace();
 		}
 		OutputStreamWriter outWriter = new OutputStreamWriter(os);
-
 		try {
 			outWriter.write(writeString);
-			System.out.println(TAG+"写入任务列表文件**************");
-			System.out.println(TAG+writeString);
+			System.out.println("写入任务列表文件**************");
+			System.out.println(writeString);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("写入文件异常");

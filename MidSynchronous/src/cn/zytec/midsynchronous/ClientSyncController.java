@@ -1,5 +1,6 @@
 package cn.zytec.midsynchronous;
 
+import cn.zytec.lee.AppLogger;
 import cn.zytec.midsynchronous.client.ISyncDataUpdate;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 
@@ -10,8 +11,7 @@ import cn.zytec.midsynchronous.client.ISyncStateMonitor;
    * @modify date: 2012-6-27 下午02:39:02
    */
 public class ClientSyncController implements IDownDataTransferEventListener,IStateDistributeEventListener,ITaskManagerEventListener,IUpDataTransferEventListener,IUpdateDataEventListener {
-	
-	private static final String TAG = "TAG:ClientSyncController**********";
+	private AppLogger log = AppLogger.getLogger("ClientSyncController");
 	
 	private static ClientSyncController clientSyncControllerInstance;
 	public static ClientSyncController getClientSyncControllerInstance() {
@@ -89,7 +89,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	public void initSyncUpDataTask (SyncTaskDescription taskDescription) {
 		taskManager.create(taskDescription);
-		System.out.println(TAG+"创建上行新任务成功"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("创建上行新任务成功"+Thread.currentThread().getName());
+		}
 	}
 	
 	/** 
@@ -101,7 +103,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	public void initSyncDownDataTask(SyncTaskDescription taskDescription) {
 		taskManager.create(taskDescription);
-		System.out.println(TAG+"创建下行新任务成功"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("创建下行新任务成功"+Thread.currentThread().getName());
+		}
 	}
 	
 	@Override
@@ -120,7 +124,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			updateError (taskDescription);
 			break;
 		default:
-			System.out.println(TAG+"数据更新事件对象事件描述出错。");
+			if(log.isDebugEnabled()) {
+				log.debug("数据更新事件对象传输错误");
+			}
 			break;
 		}
 	}
@@ -153,7 +159,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			break;
 
 		default:
-			System.out.println("上传数据传输事件监听错误！事件对象参数有误");
+			if(log.isDebugEnabled()) {
+				log.debug("上行数据传输事件对象传输错误");
+			}
 			break;
 		}
 		
@@ -200,6 +208,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			break;
 
 		default:
+			if(log.isDebugEnabled()) {
+				log.debug("下行数据传输事件对象错误");
+			}
 			break;
 		}
 	}
@@ -215,13 +226,18 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void putInTask(SyncTaskDescription description) {
-		System.out.print(TAG+"同步控制器任务提交方法执行。"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("同步控制器任务提交方法执行。"+Thread.currentThread().getName());
+		}
+
 		if(description.getSource().equals("UP")){//上行
 			upDataTransfer.addTaskToUpDataTransfer(description);//添加到上行同步数据传输器
 		} else if (description.getSource().equals("DOWN")) { //下行
 			downDataTransfer.addTaskToDownDataTransfer(description);
 		} else {
-			System.out.println(TAG+"任务辅助标志错误");
+			if (log.isDebugEnabled()) {
+				log.debug("任务提交任务类型参数错误");
+			}
 		}
 		//直接更改当前任务状态信息为草稿态
 		description.setTaskState(SyncTaskDescription.SynTaskState.DRAFT);
@@ -239,9 +255,13 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void stateDistribute(SyncTaskDescription description) {
-		System.out.println(TAG+"状态分发执行！状态为："+description.getTaskState()+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("状态分发执行！状态为："+description.getTaskState()+Thread.currentThread().getName());
+		}
 		if(stateMonitor==null) {
-			System.out.println(TAG+"应用程序没有注册状态监控组件");
+			if(log.isDebugEnabled()) {
+				log.debug("应用程序没有注册状态监控组件");
+			}
 		} else {
 			/**这里传的参数还需要修改，应该携带更多的任务信息*******/
 			stateMonitor.clientStateUpdate(description.getTaskState());
@@ -271,7 +291,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void taskTransferStart (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"任务传输启动"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("任务传输启动"+Thread.currentThread().getName());
+		}
 		//直接修改任务状态
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.DRAFT);
 		//通过任务管理器修改任务状态
@@ -288,7 +310,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void taskApplyComplete (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"任务申请完成态"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("任务申请完成态"+Thread.currentThread().getName());
+		}
 		taskDescription.setTaskState( SyncTaskDescription.SynTaskState.TOTRANSMIT);
 		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.TOTRANSMIT);
 		taskManager.update(taskDescription);//将修改任务名称，token以及任务状态写入文件
@@ -336,7 +360,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void taskTransferError (SyncTaskDescription description) {
-		System.out.println(TAG+"任务传输错误");
+		if(log.isDebugEnabled()) {
+			log.debug("任务传输错误");
+		}
 	}
 	
 	
@@ -348,7 +374,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void taskDataSend (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"下行任务数据传输态！！！"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("下行任务数据传输态！！！"+Thread.currentThread().getName());
+		}
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.TRANSMITTING);
 //		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.TRANSMITTING);
 		taskManager.update(taskDescription);
@@ -363,7 +391,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void upTaskTransferComplete (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"任务完成态态！！！"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("任务完成态态！！！"+Thread.currentThread().getName());
+		}
 //		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.COMPLETION);
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.COMPLETION);//完成态
 		stateDistribute.addStateDistribute(taskDescription);
@@ -380,7 +410,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void updateComplete (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"下行任务最后被处理，删除任务信息，更新文件");
+		if(log.isDebugEnabled()) {
+			log.debug("下行任务最后被处理，删除任务信息，更新文件");
+		}
 		taskManager.delete(taskDescription);
 		taskManager.update(taskDescription);//完成
 	}
@@ -393,7 +425,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	*/ 
 	
 	private void updateError (SyncTaskDescription taskDescription) {
-		System.out.println(TAG+"数据已保存完成，当前客户应用没有更新");
+		if(log.isDebugEnabled()) {
+			log.debug("数据已保存完成，当前客户应用没有更新");
+		}
 	}
 	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.zytec.lee.AppLogger;
+
 /**
    * @ClassName: DSyncUpdateDataDispatch
    * @Description: 数据更新调度器
@@ -12,7 +14,7 @@ import java.util.List;
    */
 public class DSyncUpdateDataDispatch extends Thread {
 	
-	private static final String TAG = "TAG:DSyncUpdateDataDispatch";
+	private AppLogger log = AppLogger.getLogger("DSyncUpdateDataDispatch");
 
 	private IUpdateDataEventListener listener;	
 	private List<SyncTaskDescription> updateDataDescriptions;
@@ -70,7 +72,9 @@ public class DSyncUpdateDataDispatch extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println(TAG+ "数据更新调度器线程运行！"+Thread.currentThread().getName());
+		if(log.isDebugEnabled()) {
+			log.debug("数据更新调度器线程运行！"+Thread.currentThread().getName());
+		}
 		while(true) {
 			synchronized(this) {	
 				while(updateDataDescriptions.size()>0) {

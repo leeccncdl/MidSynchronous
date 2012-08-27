@@ -12,9 +12,10 @@ import android.widget.Button;
 
 
 public class MidSynchronousActivity extends Activity {
-
+	
+	private AppLogger log = AppLogger.getLogger(MidSynchronousActivity.class);
+	
 	Thread th;
-    
     Button b1;;
     Button b2;;
     Button b3;
@@ -51,7 +52,9 @@ public class MidSynchronousActivity extends Activity {
 		        th = new Thread() {
 					public void run() {
 						t.addSyncDataTransferTask(gsonString,sourceFiles);
-		                System.out.println("$$$$$$$$$$上行任务启动线程执行完毕$$$$$$$$$$");
+						if(log.isDebugEnabled()) {
+							log.debug("上行任务启动线程执行完毕");
+						}
 					}
 		        };
 		        th.start();
@@ -68,7 +71,9 @@ public class MidSynchronousActivity extends Activity {
 						public void run() {
 //			                Test t = new Test();
 			                t.addDownSyncDataTransferTask("TestCondition");	
-			                System.out.println("$$$$$$$$$$下行任务启动线程执行完毕$$$$$$$$$$");
+			                if(log.isDebugEnabled()) {
+			                	log.debug("下行任务启动线程执行完毕");
+			                }
 						}
 			        };
 			        th.start();
@@ -84,8 +89,10 @@ public class MidSynchronousActivity extends Activity {
 					public void run() {
 //		                Test t = new Test();
 		                t.runTask();
-		                System.out.println("$$$$$$$$$$执行未完成任务启动线程执行完毕$$$$$$$$$$");
+		                if(log.isDebugEnabled()) {
+		                	log.debug("执行未完成任务启动线程执行完毕");
 		                }
+		            }
 		        };
 		        th.start();
 			}

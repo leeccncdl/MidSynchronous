@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.content.Context;
 import cn.zytec.lee.App;
+import cn.zytec.lee.AppLogger;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 
 import com.google.gson.Gson;
@@ -19,8 +20,8 @@ import com.google.gson.Gson;
    * @modify date: 2012-6-27 下午02:38:17
    */
 public class TSyncTaskManager implements ISyncTaskStorager {
-	
-	private static final String TAG = "TAG:TSyncTaskManagerMMMMMMMMMM";
+	private AppLogger log = AppLogger.getLogger("TSyncTaskManager");
+
 	private static final String DESCRIPTIONFILENAME = "Description.taskfile";
 	
 	private ITaskManagerEventListener listener;
@@ -108,7 +109,9 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	@Override
 	public boolean update(SyncTaskDescription description) {
 		// TODO Auto-generated method stub
-		System.out.println(TAG+"UPDATE********************************");
+		if(log.isDebugEnabled()) {
+			log.debug("UPDATE********************************");
+		}
 		AppFileUtils.writeFile(App.getInstance(),DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
 		return true;
 	}

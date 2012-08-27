@@ -14,8 +14,7 @@ import cn.zytec.midsynchronous.SyncTaskDescription;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 
 public class CreateTaskDescription {
-	
-	private static final String TAG = "TAG:CreateTaskDescription";
+//	private AppLogger log = AppLogger.getLogger("CreateTaskDescription");
 	//上行任务的数据文件存储在一个固定的SD卡文件夹路径。
 //	private static final String SDCARDSOURCEDIR = "";
 	/** 
@@ -47,7 +46,6 @@ public class CreateTaskDescription {
 //		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		SyncTaskDescription taskDescription = new SyncTaskDescription("", "associateId",007, 
 				null, "condition",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), SyncTaskDescription.UPTASK, null, fileInfo);
-		System.out.println(TAG+"生成上行任务描述对象成功");
 		return taskDescription;
 	}
 	

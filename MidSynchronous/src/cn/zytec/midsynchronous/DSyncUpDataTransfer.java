@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import cn.zytec.lee.App;
+import cn.zytec.lee.AppLogger;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 import cn.zytec.midsynchronous.ws.UpwardWs;
 
@@ -20,7 +21,8 @@ import com.google.gson.Gson;
  */
 public class DSyncUpDataTransfer extends Thread {
 
-	private static final String TAG = "TAG:DSyncUpDataTransferUUUUUUUUUU";
+	private AppLogger log = AppLogger.getLogger("DSyncUpDataTransfer");
+
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
 	
@@ -37,9 +39,9 @@ public class DSyncUpDataTransfer extends Thread {
 			if(this.getState() == Thread.State.WAITING) {
 				
 				upTaskDescriptions.add(description);
-				System.out.println(TAG + "任务添加到上行数据传输任务列表中"
-						+ Thread.currentThread().getName());
-
+				if(log.isDebugEnabled()) {
+					log.debug("任务添加到上行数据传输任务列表中"+ Thread.currentThread().getName());
+				}
 				this.notify();
 			}
 		}
@@ -161,22 +163,26 @@ public class DSyncUpDataTransfer extends Thread {
 		Gson gson = new Gson();
 		while(iterator.hasNext()) {
 			description = iterator.next();
-			System.out.println(TAG + "当前有上行同步任务，任务ID为："
-					+ description.getTaskId()
-					+ Thread.currentThread().getName());
+			if(log.isDebugEnabled()) {
+				log.debug("当前有上行同步任务，任务ID为："
+						+ description.getTaskId()
+						+ Thread.currentThread().getName());
+			}
 			// 任务启动事件
 			taskTansferStart(description);
 
 			// 上行请求返回token
 			String token = null;
 			token = UpwardWs.UpwardRequest(gson.toJson(description), "lee");// 用户验证信息如何传入？？
-			System.out.println(TAG + "Token：" + token);
+			System.out.println("Token：" + token);
 			if(token==null) {
-				System.out.println(TAG+"Request 返回token失败，终止请求");
+				if(log.isDebugEnabled()) {
+					log.debug("Request 返回token失败，终止请求");
+				}
 				return false;
 			}
 			String newTaskId = token.split(SEP)[0];
-			System.out.println(TAG + "newTaskId:" + newTaskId);
+			System.out.println("newTaskId:" + newTaskId);
 			description.setTaskId(newTaskId);
 
 			// 将token保存在description中，任务申请完成
@@ -190,7 +196,9 @@ public class DSyncUpDataTransfer extends Thread {
 				//移除本类列表中的该任务
 				iterator.remove();
 			} else {
-				System.out.println(TAG + "当前任务上行数据传输没有完成，已终止");
+				if(log.isDebugEnabled()) {
+					log.debug("当前任务上行数据传输没有完成，已终止");
+				}
 				return false;
 			}
 		}	
@@ -256,8 +264,8 @@ public class DSyncUpDataTransfer extends Thread {
 		double times = Math.ceil(length / (double) EVERYTIMETRANSSIZE)
 				- transTimes;// 有断点相关修改
 
-		System.out.println(TAG + "需要传输的次数：" + times);
-		System.out.println(TAG + "文件名：" + fileName);
+		System.out.println("需要传输的次数：" + times);
+		System.out.println("文件名：" + fileName);
 		System.out.println("INT" + (int) times);
 
 		for (int i = 0; i < times; i++) {
@@ -282,8 +290,9 @@ public class DSyncUpDataTransfer extends Thread {
 							+ lastlength);// 有断点相关修改
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
-					System.out.println(TAG
-							+ "***********上行传输返回值不为 1************");
+					if(log.isDebugEnabled()) {
+						log.debug("***********上行传输返回值不为 1************");
+					}
 					taskTransferError(description);// 暂时没有具体处理
 					return false;
 					// break;
@@ -294,8 +303,10 @@ public class DSyncUpDataTransfer extends Thread {
 					fileDes.setAuxiliary("Done");
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
-					System.out.println(TAG
-							+ "***********上行传输返回值不为 1************");
+					if(log.isDebugEnabled()) {
+						log.debug("***********上行传输返回值不为 1************");
+					}
+
 					taskTransferError(description);// 暂时没有具体处理
 					return false;
 					// break;
@@ -316,8 +327,9 @@ public class DSyncUpDataTransfer extends Thread {
 							* ((i + transTimes) + 1));// //////////////
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
-					System.out.println(TAG
-							+ "***********上行传输返回值不为 1************");
+					if(log.isDebugEnabled()) {
+						log.debug("***********上行传输返回值不为 1************");
+					}
 					taskTransferError(description);
 					return false;
 					// break;

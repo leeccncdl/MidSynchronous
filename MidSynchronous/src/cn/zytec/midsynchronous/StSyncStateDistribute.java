@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.zytec.lee.AppLogger;
+
 /**
    * @ClassName: StSyncStateDistribute
    * @Description: 同步状态分发器
@@ -11,8 +13,8 @@ import java.util.List;
    * @modify date: 2012-6-27 下午02:37:18
    */
 public class StSyncStateDistribute extends Thread{
-	
-	private static final String TAG = "TAG:StSyncStateDistribute";
+	private AppLogger log = AppLogger.getLogger("StSyncStateDistribute");
+
 	private volatile boolean isStopThread = false;
 	
 	private IStateDistributeEventListener listener;
@@ -36,8 +38,9 @@ public class StSyncStateDistribute extends Thread{
 				} else {
 					distributeDescriptions.add(description);
 				}
-				
-				System.out.println(TAG+"任务状态分发器：添加新的任务状态列表,添加时的状态为："+description.getTaskState()+Thread.currentThread().getName());
+				if(log.isDebugEnabled()) {
+					log.debug("任务状态分发器：添加新的任务状态列表,添加时的状态为："+description.getTaskState()+Thread.currentThread().getName());
+				}
 				this.notify();
 			}
 
@@ -60,8 +63,10 @@ public class StSyncStateDistribute extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println(TAG+"同步状态分发线程运行！"+!isStopThread+Thread.currentThread().getName());
-		
+		if(log.isDebugEnabled()) {
+			log.debug("同步状态分发线程运行！"+!isStopThread+Thread.currentThread().getName());
+		}
+
 		while(true) {
 			synchronized(this) {
 				System.out.println("**********************************");
