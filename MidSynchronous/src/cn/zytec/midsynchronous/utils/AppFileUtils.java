@@ -96,7 +96,7 @@ public class AppFileUtils {
 		try {
 			outWriter.write(writeString);
 			System.out.println("写入任务列表文件**************");
-			System.out.println(writeString);
+//			System.out.println(writeString);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("写入文件异常");

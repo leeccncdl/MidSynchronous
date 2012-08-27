@@ -145,23 +145,7 @@ public class DSyncDownDataTransfer extends Thread {
 					e.printStackTrace();
 				}
 			}
-
 		}
-		/**修改前方式
-		while (true) {
-
-			while (downTaskDescriptions.size() < 1) {
-				try {
-					System.out.println(TAG+ "下行数据同步线程休眠 5s"+Thread.currentThread().getName());
-					sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} finally {
-
-				}
-			}
-			runDownDataTransfer(downTaskDescriptions.iterator());
-		}修改前方式结束**/
 	}
 	
 	private boolean runDownDataTransfer(Iterator<SyncTaskDescription> iterator) {
@@ -212,6 +196,8 @@ public class DSyncDownDataTransfer extends Thread {
 					log.debug("当前下行任务数据接收意外终止");
 				}
 				taskTransferError(description);
+				//20120827添加修改处理，无论任务执行完毕还是出错，都将任务从任务列表中移除，防止任务出错不断申请情况。重新申请由其他方法触发。
+				iterator.remove();
 				return false;
 			}
 		}

@@ -199,6 +199,8 @@ public class DSyncUpDataTransfer extends Thread {
 				if(log.isDebugEnabled()) {
 					log.debug("当前任务上行数据传输没有完成，已终止");
 				}
+				//20120827添加修改处理，无论任务执行完毕还是出错，都将任务从任务列表中移除，防止任务出错不断申请情况。重新申请由其他方法触发。
+				iterator.remove();
 				return false;
 			}
 		}	

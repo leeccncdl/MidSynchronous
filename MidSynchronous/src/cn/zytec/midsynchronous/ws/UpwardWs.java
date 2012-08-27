@@ -60,7 +60,7 @@ public class UpwardWs {
 	public static String UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
 
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+	
 		
 		System.out.println(TAG +" fileName:"+fileName+" Offset:"+lOffset+"~~~~~~");
 		

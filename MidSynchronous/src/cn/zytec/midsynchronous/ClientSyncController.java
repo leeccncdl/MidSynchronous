@@ -11,6 +11,7 @@ import cn.zytec.midsynchronous.client.ISyncStateMonitor;
    * @modify date: 2012-6-27 下午02:39:02
    */
 public class ClientSyncController implements IDownDataTransferEventListener,IStateDistributeEventListener,ITaskManagerEventListener,IUpDataTransferEventListener,IUpdateDataEventListener {
+	
 	private AppLogger log = AppLogger.getLogger("ClientSyncController");
 	
 	private static ClientSyncController clientSyncControllerInstance;
@@ -38,7 +39,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	/** 
 	* 向客户端同步控制器注册同步状态监控器 
-	* @param stateMonitor     
+	* @param stateMonitor 要注册的状态监控器对象    
 	* @return void
 	* @throws 
 	*/  
@@ -96,10 +97,10 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	/** 
 	* 创建下行同步任务，使用传入的任务描述对象，由控制任务管理器创建该任务
-	* @param taskDescription     
+	* @param taskDescription 任务描述对象 
 	* @return void
 	* @throws 
-	*/ 
+	*/  
 	
 	public void initSyncDownDataTask(SyncTaskDescription taskDescription) {
 		taskManager.create(taskDescription);
@@ -107,6 +108,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			log.debug("创建下行新任务成功"+Thread.currentThread().getName());
 		}
 	}
+	
 	
 	@Override
 	public void updateDataEvent(EUpdateDataEvent event) {
@@ -314,7 +316,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			log.debug("任务申请完成态"+Thread.currentThread().getName());
 		}
 		taskDescription.setTaskState( SyncTaskDescription.SynTaskState.TOTRANSMIT);
-		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.TOTRANSMIT);
+//		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.TOTRANSMIT);
 		taskManager.update(taskDescription);//将修改任务名称，token以及任务状态写入文件
 		stateDistribute.addStateDistribute(taskDescription) ;
 	}
@@ -375,8 +377,9 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	private void taskDataSend (SyncTaskDescription taskDescription) {
 		if(log.isDebugEnabled()) {
-			log.debug("下行任务数据传输态！！！"+Thread.currentThread().getName());
+			log.debug("上行任务数据传输态！！！"+Thread.currentThread().getName());
 		}
+		
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.TRANSMITTING);
 //		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.TRANSMITTING);
 		taskManager.update(taskDescription);

@@ -35,9 +35,11 @@ public class MidSynchronousActivity extends Activity {
 		final String gsonString = gson.toJson(testArr);
         final List<String> sourceFiles = new ArrayList<String>();
         sourceFiles.add("sourcefile1.png");
+        sourceFiles.add("sourcefile2.JPG");
+        
 //        sourceFiles.add("sourcefile2.JPG");
         /********************模拟上行同步数据结束*******************/
-
+        
         b1 = (Button)findViewById(R.id.add_upTask);
         b2 = (Button)findViewById(R.id.add_downTask);
         b3 = (Button)findViewById(R.id.excute_Task);
