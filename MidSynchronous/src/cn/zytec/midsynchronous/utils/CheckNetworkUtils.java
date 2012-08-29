@@ -10,7 +10,7 @@ import android.provider.Settings;
 
 public class CheckNetworkUtils {
 	
-	private static ConnectivityManager conMan = (ConnectivityManager) App.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+	private static ConnectivityManager conMan = (ConnectivityManager) App.context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 	public static boolean check3G() {
 		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
@@ -27,7 +27,7 @@ public class CheckNetworkUtils {
 	public static void wirelessSettingAct() {
 		Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		App.getInstance().startActivity(intent);//进入无线网络配置界面
+		App.context.startActivity(intent);//进入无线网络配置界面
 	}
 
 }

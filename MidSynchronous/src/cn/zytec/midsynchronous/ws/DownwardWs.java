@@ -8,6 +8,8 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import cn.zytec.midsynchronous.ClientSyncController;
+import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class DownwardWs {
@@ -39,19 +41,22 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"*********************http 返回错误");
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return "";
 			}
 			
 			jsonTask = postMethod.getResponseBodyAsString();
 			
 			if(jsonTask.equals("-1")||jsonTask.equals("-2")) {
-				System.out.println(TAG+"下行申请错误");
-				System.out.println(jsonTask);
+				System.out.println(TAG+"下行申请错误，用户身份验证失败");
+			} else if(jsonTask.equals("2")) {
+				System.out.println(TAG+"下行申请Session过期");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
@@ -90,18 +95,23 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"*********************http 返回错误");
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return null;
 			}
 			response = postMethod.getResponseBodyAsString();
-			if(response.equals("-1")||response.equals("-2")) {
+			if(response.equals("-1")) {
 				System.out.println(TAG+"下行传输错误");
-				System.out.println(response);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_AUTH_FAIL);
+			} else if(response.equals("-2")) {
+				System.out.println(TAG+"下行传输错误");
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			}
 			//1成功  -1验证失败  -2session过期
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
@@ -136,17 +146,22 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"finish方法*********************http 返回错误");
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
 			excuteState = postMethod.getResponseBodyAsString();
-			if(excuteState.equals("-1")||excuteState.equals("-2")) {
-				System.out.println(TAG+"下行结束返回错误");
-				System.out.println(excuteState);
+			if(excuteState.equals("-1")) {
+				System.out.println(TAG+"下行完成错误");
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_AUTH_FAIL);
+			} else if(excuteState.equals("-2")) {
+				System.out.println(TAG+"下行完成错误");
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();

@@ -1,5 +1,7 @@
 package cn.zytec.midsynchronous.client;
 
+import java.util.List;
+
 
 
 /**
@@ -12,6 +14,6 @@ package cn.zytec.midsynchronous.client;
    */
 public interface ISyncDataUpdate {
 	
-	public void clientDataUpdate(String s);
+	public void clientDataUpdate(String taskDataString,List<String> sourceFiles);
 	
 }

@@ -160,14 +160,14 @@ public class DSyncDownDataTransfer extends Thread {
 
 			//传输开始
 			taskTansferStart(description);
-			gson = new Gson();
+		
 			//请求
 			String jsonTask = DownwardWs.DownwardRequest(gson.toJson(description), "lee");
 			if(jsonTask==null||jsonTask.equals("")) {
 				if(log.isDebugEnabled()) {
 					log.debug("下行申请返回错误");
 				}
-
+				iterator.remove();
 				taskTransferError(description);
 				return false;
 			}
@@ -187,9 +187,13 @@ public class DSyncDownDataTransfer extends Thread {
 			taskApplyComplete(description);
 			if(taskDataInceptfiles(description)) {
 				//传输完成请求
-				DownwardWs.DownwardFinish(token);
-				//传输完成事件
-				taskTransferComplete(description);
+				if(DownwardWs.DownwardFinish(token)) {
+					taskTransferComplete(description);
+				} else {
+					System.out.println("下行传输完成请求返回错误");
+					//balabalabala
+				}
+				
 				iterator.remove();//在本类的任务列表中移除该任务
 			} else {
 				if(log.isDebugEnabled()) {
@@ -256,7 +260,7 @@ public class DSyncDownDataTransfer extends Thread {
 					((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1), EVERYTIMETRANSSIZE);
 
 			if (buffer!=null && buffer.length != 0) {
-				AppFileUtils.writeFile(App.getInstance(), fileName,
+				AppFileUtils.writeFile(App.context, fileName,
 						buffer, Context.MODE_APPEND,isSourceFile,description.getTaskId());
 				if(buffer.length != EVERYTIMETRANSSIZE) {
 					fileDes.setAuxiliary("Done");

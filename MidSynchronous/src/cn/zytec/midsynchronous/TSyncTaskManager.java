@@ -36,7 +36,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	}
 	
 	private void isDescriptionFileExist() {
-		String[] files = App.getInstance().fileList();
+		String[] files = App.context.fileList();
 		for(int i=0,len=files.length;i<len;i++) {
 			if(files[i].equals(DESCRIPTIONFILENAME)) {
 				return ;
@@ -45,7 +45,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		
 		TSyncTaskDescriptions taskDescriptions = new TSyncTaskDescriptions();
 		Gson gson = new Gson();
-		AppFileUtils.writeFile(App.getInstance(), DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
+		AppFileUtils.writeFile(App.context, DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
 		
 	}
   
@@ -56,7 +56,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	*/  
 	
 	public boolean LoadTask () {
-		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.getInstance());
+		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.context);
 		taskDescriptions.getArrTaskDescriptions().clear();//添加之前清空内存中的可能存在的任务
 		if(loadTasks.getArrTaskDescriptions().size()!=0) {
 			loadTasks.setCount(loadTasks.getArrTaskDescriptions().size());
@@ -80,8 +80,8 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		
 		taskDescriptions.add(description);
 		//创建任务唯一的入口，将当前任务列表内容写入任务描述文件，每次重新写入
-
-		AppFileUtils.writeFile(App.getInstance(),DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		AppFileUtils.writeFile(App.context,DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		
 		//提交任务事件，在主控制器中具体处理。添加一个任务，就应该提交一个任务
 		putinTask(description);
 	}
@@ -111,7 +111,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		if(log.isDebugEnabled()) {
 			log.debug("UPDATE********************************");
 		}
-//		AppFileUtils.writeFile(App.getInstance(),DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		AppFileUtils.writeFile(App.context,DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
 		return true;
 	}
 

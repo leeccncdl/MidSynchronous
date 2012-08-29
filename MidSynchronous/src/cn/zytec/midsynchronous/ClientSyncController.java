@@ -25,7 +25,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	/*****************************应用程序数据更新和状态监控模块注册***************************/
 	private ISyncDataUpdate dataUpdate = null;
-	private ISyncStateMonitor stateMonitor = null;
+	private static ISyncStateMonitor stateMonitor = null;
 	
 	/** 
 	* 向客户端同步控制器注册同步数据更新器
@@ -43,8 +43,8 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	* @return void
 	* @throws 
 	*/  
-	public void registSyncStateMonitor(ISyncStateMonitor stateMonitor) {
-		this.stateMonitor = stateMonitor;
+	public static void registSyncStateMonitor(ISyncStateMonitor stateMonitor) {
+		ClientSyncController.stateMonitor = stateMonitor;
 	}
 	/*******************************注册结束***************************************/
 	
@@ -77,7 +77,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	* @throws 
 	*/ 
 	
-	public void activeTask() {
+	public void startUnfinishedTask() {
 		taskManager.LoadTask();
 	}
 	
@@ -243,8 +243,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		}
 		//直接更改当前任务状态信息为草稿态
 		description.setTaskState(SyncTaskDescription.SynTaskState.DRAFT);
-		//通过任务管理器更改任务状态为草稿态
-//		taskManager.updateTaskState(description.getTaskId(), SyncTaskDescription.SynTaskState.DRAFT);
+		//状态分发，可以省略。。。。意义不大
 		stateDistribute.addStateDistribute(description);
 	}
 	
@@ -269,6 +268,15 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			stateMonitor.clientStateUpdate(description.getTaskState());
 		}
 	}
+	
+	public static void stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode stateException) {
+		if(stateMonitor==null) {
+			System.out.println("状态监控模块没有注册");
+		} else {
+			stateMonitor.clientStateException(stateException);
+		}
+	}
+	
 	/** 
 	* 更新执行，应用注册的数据更新器执行更新操作
 	* @param taskDescription     
@@ -281,9 +289,12 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			System.out.println("应用程序没有注册程序更新组件");
 		} else {
 			/*******************传的参数还需要确定*************************/
-			dataUpdate.clientDataUpdate("");
+			//data字符串 资源文件字符串List
+			dataUpdate.clientDataUpdate("",null);
 		}
 	}
+	
+
  
 	/** 
 	* 任务传输启动，通过任务控制器修改任务状态，同时将任务加入到状态分发器
@@ -298,8 +309,6 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		}
 		//直接修改任务状态
 		taskDescription.setTaskState(SyncTaskDescription.SynTaskState.DRAFT);
-		//通过任务管理器修改任务状态
-//		taskManager.updateTaskState(taskDescription.getTaskId(), SyncTaskDescription.SynTaskState.DRAFT);
 		stateDistribute.addStateDistribute(taskDescription);
 	}
 	 

@@ -9,13 +9,16 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
+import cn.zytec.midsynchronous.ClientSyncController;
+import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class UpwardWs {
 	private static final String TAG = "TAG:UpwardWs";
 	private static final String HOST = "http://192.168.4.117:8080/MidSynchronous/servlet/ServletEntrance";
-	private static final int TIMEOUT = 10000;
+	private static final int TIMEOUT = 20000;
 	private static HttpClient httpclient = new HttpClient();
+	
 	public static String UpwardRequest (String strJsonTask, String strJsonIdentity) {
 		
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
@@ -35,10 +38,10 @@ public class UpwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"上行数据传输申请http返回异常");
-				return null;
-			}
-			
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
+				return "";
+			} 
 //			httpclient.executeMethod(postMethod);
 			token = postMethod.getResponseBodyAsString();
 		} catch (IOException e) {
@@ -57,10 +60,10 @@ public class UpwardWs {
 		return token;
 	}
 	
-	public static String UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
+	public static boolean UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
 
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-	
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
 		
 		System.out.println(TAG +" fileName:"+fileName+" Offset:"+lOffset+"~~~~~~");
 		
@@ -83,18 +86,33 @@ public class UpwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"上行传输数据http返回错误");
-				return "";
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
+				return false;
 			}
 			returnString = postMethod.getResponseBodyAsString();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
-
-		return returnString;
+		if(returnString.equals("1")) {
+			return true;
+		} else if(returnString.equals("-1")) {
+			//巴拉巴拉巴拉 用户验证失败
+			System.out.println("HHHHHHHHHHHHHHHHHHHHH"+"用户验证失败");
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_AUTH_FAIL);
+			return false;
+		} else if(returnString.equals("-2")) {
+			//session 过期
+			System.out.println("HHHHHHHHHHHHHHHHHHHH"+"Session过期");
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
+			return false;
+		}
+		return false;
 	}
 	
 	public static boolean UpwardFinish (String strToken, boolean bTrash) {
@@ -116,7 +134,8 @@ public class UpwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println(TAG+"上行完成请求http出错");
+				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
 
@@ -124,6 +143,7 @@ public class UpwardWs {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();

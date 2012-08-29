@@ -15,6 +15,8 @@ import android.os.Environment;
 public class SDFileUtils {
 	private String SDCardRoot;
 	private String SDStateString;
+	
+//	private static byte[] buffer = new byte[102400];
 
 	public SDFileUtils() {
 		// 得到当前外部存储设备的目录
@@ -183,9 +185,9 @@ public class SDFileUtils {
 	 * @throws
 	 */
 
-	public byte[] readFromSD(String dir, String fileName, long offset,
-			int length) {
-		byte[] buffer = new byte[length];
+	public boolean readFromSD(String dir, String fileName, long offset,
+			int length,byte[] buffer) {
+//		byte[] buffer = new byte[length];
 		File file = new File(SDCardRoot + dir + File.separator + fileName);
 		RandomAccessFile raFile = null;
 		try {
@@ -204,7 +206,7 @@ public class SDFileUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return buffer;
+		return true;
 	}
 
 	/***

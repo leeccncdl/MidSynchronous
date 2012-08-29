@@ -25,7 +25,7 @@ public class DSyncUpDataTransfer extends Thread {
 
 	private static final String SEP = "!@#";
 	private static final int EVERYTIMETRANSSIZE = 102400;
-	
+
 	private IUpDataTransferEventListener listener;
 	private List<SyncTaskDescription> upTaskDescriptions;// 上行同步数据传输任务描述列表
 
@@ -36,11 +36,12 @@ public class DSyncUpDataTransfer extends Thread {
 
 	public void addTaskToUpDataTransfer(SyncTaskDescription description) {
 		synchronized (this) {
-			if(this.getState() == Thread.State.WAITING) {
-				
+			if (this.getState() == Thread.State.WAITING) {
+
 				upTaskDescriptions.add(description);
-				if(log.isDebugEnabled()) {
-					log.debug("任务添加到上行数据传输任务列表中"+ Thread.currentThread().getName());
+				if (log.isDebugEnabled()) {
+					log.debug("任务添加到上行数据传输任务列表中"
+							+ Thread.currentThread().getName());
 				}
 				this.notify();
 			}
@@ -128,9 +129,9 @@ public class DSyncUpDataTransfer extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		while (true) {
-			synchronized(this) {			
-				while (upTaskDescriptions.size() > 0) {		
-					if(runUpDataTransfer(upTaskDescriptions.iterator()) == false) {//执行发生错误
+			synchronized (this) {
+				while (upTaskDescriptions.size() > 0) {
+					if (runUpDataTransfer(upTaskDescriptions.iterator()) == false) {// 执行发生错误
 						try {
 							this.wait();
 						} catch (InterruptedException e) {
@@ -148,24 +149,24 @@ public class DSyncUpDataTransfer extends Thread {
 			}
 		}
 	}
-			
 
-	/** 
-	* 执行上行任务的传输过程
-	* @param iterator 任务集合的迭代器对象
-	* @return     
-	* @return boolean 任务是否正确执行结束
-	* @throws 
-	*/ 
-	
+	/**
+	 * 执行上行任务的传输过程
+	 * 
+	 * @param iterator
+	 *            任务集合的迭代器对象
+	 * @return
+	 * @return boolean 任务是否正确执行结束
+	 * @throws
+	 */
+
 	private boolean runUpDataTransfer(Iterator<SyncTaskDescription> iterator) {
 		SyncTaskDescription description = null;
 		Gson gson = new Gson();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			description = iterator.next();
-			if(log.isDebugEnabled()) {
-				log.debug("当前有上行同步任务，任务ID为："
-						+ description.getTaskId()
+			if (log.isDebugEnabled()) {
+				log.debug("当前有上行同步任务，任务ID为：" + description.getTaskId()
 						+ Thread.currentThread().getName());
 			}
 			// 任务启动事件
@@ -175,10 +176,11 @@ public class DSyncUpDataTransfer extends Thread {
 			String token = null;
 			token = UpwardWs.UpwardRequest(gson.toJson(description), "lee");// 用户验证信息如何传入？？
 			System.out.println("Token：" + token);
-			if(token==null) {
-				if(log.isDebugEnabled()) {
+			if (token == null) {
+				if (log.isDebugEnabled()) {
 					log.debug("Request 返回token失败，终止请求");
 				}
+				iterator.remove();
 				return false;
 			}
 			String newTaskId = token.split(SEP)[0];
@@ -191,22 +193,24 @@ public class DSyncUpDataTransfer extends Thread {
 
 			// 数据传输,返回true标识传输完毕
 			if (transmitDescriptionDataFile(description)) {// 任务文件传输
-				UpwardWs.UpwardFinish(description.getAssociateId(), false);
-				taskTransferComplete(description);// 任务传输结束事件
-				//移除本类列表中的该任务
+				if(UpwardWs.UpwardFinish(description.getAssociateId(), false)) {
+					System.out.println("上行任务结束返回错误");
+					taskTransferComplete(description);// 任务传输结束事件
+				}
+				// 移除本类列表中的该任务
 				iterator.remove();
 			} else {
-				if(log.isDebugEnabled()) {
+				if (log.isDebugEnabled()) {
 					log.debug("当前任务上行数据传输没有完成，已终止");
 				}
-				//20120827添加修改处理，无论任务执行完毕还是出错，都将任务从任务列表中移除，防止任务出错不断申请情况。重新申请由其他方法触发。
+				// 20120827添加修改处理，无论任务执行完毕还是出错，都将任务从任务列表中移除，防止任务出错不断申请情况。重新申请由其他方法触发。
 				iterator.remove();
 				return false;
 			}
-		}	
+		}
 		return true;
 	}
-	
+
 	/**
 	 * 上行同步任务数据传输 传输任务数据文件方法，一次取出需要传输的数据文件和资源文件，调用监听器方法，记录传输状态
 	 * 
@@ -225,11 +229,11 @@ public class DSyncUpDataTransfer extends Thread {
 			SyncFileDescription value = item.getValue();
 			// 调用单个文件传输方法，判断是资源文件还是数据文件
 			boolean isSourceFile = !key.endsWith(AppFileUtils.FILETAG);
-			
+
 			if (!value.getAuxiliary().equals("Done")) {
-				System.out.println(isSourceFile);
+				System.out.println("当前传输的文件"+isSourceFile);
 				if (!transFile(key, value, description.getAssociateId(),
-						description,isSourceFile)) {
+						description, isSourceFile)) {
 					return false;
 				}
 			}
@@ -266,33 +270,58 @@ public class DSyncUpDataTransfer extends Thread {
 		double times = Math.ceil(length / (double) EVERYTIMETRANSSIZE)
 				- transTimes;// 有断点相关修改
 
-		System.out.println("需要传输的次数：" + times);
-		System.out.println("文件名：" + fileName);
-		System.out.println("INT" + (int) times);
+//		System.out.println("需要传输的次数：" + times);
+//		System.out.println("文件名：" + fileName);
+//		System.out.println("INT" + (int) times);
 
 		for (int i = 0; i < times; i++) {
-			if ((times - 1) == i) {// 最后一次传输
+			if (!((times - 1) == i)) {
+				// 其他正常情况
+				AppFileUtils.readFile(App.context, fileName,
+						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
+								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
+						EVERYTIMETRANSSIZE, "r", isSourceFile,buffer);// ///
+				if (UpwardWs.UpwardTransmit(
+						token,
+						fileName,
+						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
+								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
+						buffer)) {// //////////////
+					fileDes.setTransSize(EVERYTIMETRANSSIZE
+							* ((i + transTimes) + 1));// //////////////
+					taskDataSend(description);// 控制器控制其他线程写入文件
+				} else {
+					if (log.isDebugEnabled()) {
+						log.debug("***********上行传输返回值不为 1************");
+					}
+					taskTransferError(description);
+					return false;
+					// break;
+					
+				}
+
+			} else {// 最后一次传输
 
 				int lastlength = (int) (length - EVERYTIMETRANSSIZE
 						* (times + transTimes - 1));// 有断点相关修改
 				System.out.println("LASTLENGTH" + lastlength);
 
 				byte[] bufferLast = new byte[lastlength];
-				
-				bufferLast = AppFileUtils.readFile(App.getInstance(), fileName,
-						EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",isSourceFile);// 有断点相关修改
+
+				AppFileUtils.readFile(App.context, fileName,
+						EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",
+						isSourceFile,bufferLast);// 有断点相关修改
 				/*******************/
 				// AppFileUtils.writeFile(App.getInstance(), fileName+".t",
 				// bufferLast, Context.MODE_APPEND);
 				// ///////////////////////////////////////////////
 				if (UpwardWs.UpwardTransmit(token, fileName,
-						EVERYTIMETRANSSIZE * (i + transTimes), bufferLast)
-						.equals("1")) {// 有断点相关修改
+						EVERYTIMETRANSSIZE * (i + transTimes), bufferLast)) {// 有断点相关修改
 					fileDes.setTransSize(EVERYTIMETRANSSIZE * (i + transTimes)
 							+ lastlength);// 有断点相关修改
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("***********上行传输返回值不为 1************");
 					}
 					taskTransferError(description);// 暂时没有具体处理
@@ -300,39 +329,15 @@ public class DSyncUpDataTransfer extends Thread {
 					// break;
 				}
 
-				if (UpwardWs.UpwardTransmit(token, fileName, -1, null).equals(
-						"1")) {
+				if (UpwardWs.UpwardTransmit(token, fileName, -1, null)) {
 					fileDes.setAuxiliary("Done");
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("***********上行传输返回值不为 1************");
 					}
 
 					taskTransferError(description);// 暂时没有具体处理
-					return false;
-					// break;
-				}
-			} else {
-				// 其他正常情况
-				buffer = AppFileUtils.readFile(App.getInstance(), fileName,
-						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
-								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
-						EVERYTIMETRANSSIZE, "r",isSourceFile);// ///
-				if (UpwardWs.UpwardTransmit(
-						token,
-						fileName,
-						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
-								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
-						buffer).equals("1")) {// //////////////
-					fileDes.setTransSize(EVERYTIMETRANSSIZE
-							* ((i + transTimes) + 1));// //////////////
-					taskDataSend(description);// 控制器控制其他线程写入文件
-				} else {
-					if(log.isDebugEnabled()) {
-						log.debug("***********上行传输返回值不为 1************");
-					}
-					taskTransferError(description);
 					return false;
 					// break;
 				}

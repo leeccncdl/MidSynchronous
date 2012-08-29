@@ -19,6 +19,8 @@ public class AppFileUtils {
 	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile"+File.separator;
 	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
+	private static SDFileUtils sd = new SDFileUtils();
+	
 	public static String readFile(Context context,String fileName) {
 		StringBuffer sb = new StringBuffer();
 		FileInputStream ins = null;
@@ -45,9 +47,9 @@ public class AppFileUtils {
 		return sb.toString();
 	}
 	
-	public static byte[] readFile(Context context,String fileName,long offset,int length,String mode,boolean isSourceFile) {
-		byte[] buffer = new byte[length];
-		SDFileUtils sd = new SDFileUtils();
+	public static boolean readFile(Context context,String fileName,long offset,int length,String mode,boolean isSourceFile,byte[] buffer) {
+//		byte[] buffer = new byte[length];
+//		SDFileUtils sd = new SDFileUtils();
 		
 		if(!isSourceFile) {
 			RandomAccessFile ra = null;
@@ -74,10 +76,10 @@ public class AppFileUtils {
 			}
 		} else {
 			//资源文件在SD卡上
-			buffer = sd.readFromSD(UPSOURCEFILEPATH, fileName, offset, length);
+			sd.readFromSD(UPSOURCEFILEPATH, fileName, offset, length,buffer);
 		}
-
-		return buffer;
+		return true;
+//		return buffer;
 	}
 
 	public static void writeFile(Context context,String fileName,

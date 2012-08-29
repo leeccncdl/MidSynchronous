@@ -3,6 +3,9 @@ package cn.zytec.lee;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.zytec.midsynchronous.client.CreateTaskDescription;
+import cn.zytec.midsynchronous.client.TaskControl;
+
 import com.google.gson.Gson;
 
 import android.app.Activity;
@@ -44,8 +47,11 @@ public class MidSynchronousActivity extends Activity {
         b2 = (Button)findViewById(R.id.add_downTask);
         b3 = (Button)findViewById(R.id.excute_Task);
         
-        final Test t = new Test();
-
+        final TaskControl taskControl = new TaskControl();
+        //注册数据更新和状态监控组件
+        taskControl.registSyncDataUpdate(new AppDataUpdate());
+        taskControl.registSyncStateMonitor(new AppStateMonitor());
+        
         b1.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -53,7 +59,7 @@ public class MidSynchronousActivity extends Activity {
 				// TODO Auto-generated method stub
 		        th = new Thread() {
 					public void run() {
-						t.addSyncDataTransferTask(gsonString,sourceFiles);
+						taskControl.startUpTransTask(CreateTaskDescription.createUpDescription(App.context, sourceFiles, gsonString));
 						if(log.isDebugEnabled()) {
 							log.debug("上行任务启动线程执行完毕");
 						}
@@ -63,7 +69,7 @@ public class MidSynchronousActivity extends Activity {
 
 			}
 		});
-        
+
         b2.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -72,7 +78,7 @@ public class MidSynchronousActivity extends Activity {
 			        th = new Thread() {
 						public void run() {
 //			                Test t = new Test();
-			                t.addDownSyncDataTransferTask("TestCondition");	
+							taskControl.startDownTransTask(CreateTaskDescription.createDownDescription("TestCondition"));	
 			                if(log.isDebugEnabled()) {
 			                	log.debug("下行任务启动线程执行完毕");
 			                }
@@ -90,7 +96,7 @@ public class MidSynchronousActivity extends Activity {
 		        th = new Thread() {
 					public void run() {
 //		                Test t = new Test();
-		                t.runTask();
+						taskControl.startUnfinishedTask();
 		                if(log.isDebugEnabled()) {
 		                	log.debug("执行未完成任务启动线程执行完毕");
 		                }

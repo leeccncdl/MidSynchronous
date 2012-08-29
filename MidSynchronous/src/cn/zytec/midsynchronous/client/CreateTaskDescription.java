@@ -37,10 +37,10 @@ public class CreateTaskDescription {
 		
 		SyncFileDescription fileDes = null;
 		for(int i =0,length = sourceFilesPaths.size();i<length;i++) {
-			fileDes = new SyncFileDescription(sourceFilesPaths.get(i), AppFileUtils.getFileSize(App.getInstance(), sourceFilesPaths.get(i), "r"), 0, "false");
+			fileDes = new SyncFileDescription(sourceFilesPaths.get(i), AppFileUtils.getFileSize(App.context, sourceFilesPaths.get(i), "r"), 0, "false");
 			fileInfo.put(sourceFilesPaths.get(i), fileDes);
 		}
-		fileDes = new SyncFileDescription(fileName, AppFileUtils.getFileSize(App.getInstance(), fileName, "r"), 0, "false");
+		fileDes = new SyncFileDescription(fileName, AppFileUtils.getFileSize(App.context, fileName, "r"), 0, "false");
 		fileInfo.put(fileName, fileDes);
 		
 //		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
