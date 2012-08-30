@@ -97,7 +97,7 @@ public class TSyncTaskDescriptions {
 		for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
 			String key = item.getKey();
 			
-			if(key.endsWith(AppFileUtils.FILETAG)) {
+			if(key.endsWith(App.DATAFILETAG)) {
 				AppFileUtils.deleteFile(App.context, key);
 			}
 		}

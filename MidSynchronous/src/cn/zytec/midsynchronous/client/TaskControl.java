@@ -3,6 +3,11 @@ package cn.zytec.midsynchronous.client;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.SyncTaskDescription;
 
+/**
+   * 任务控制类，控制任务的启动，应用程序的模块注册
+   * @author: lee
+   * @modify date: 2012-8-29 下午04:02:56
+   */
 public class TaskControl {
 	
 	ClientSyncController client = ClientSyncController.getClientSyncControllerInstance();

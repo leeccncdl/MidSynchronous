@@ -8,14 +8,14 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import cn.zytec.lee.App;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class DownwardWs {
 	
-	private static final String HOST = "http://192.168.4.117:8080/MidSynchronous/servlet/ServletEntrance";
-	private static final int TIMEOUT = 10000;
+	
 	private static HttpClient httpclient = new HttpClient();
 	private static final String TAG = "TAG:DownwardWs";
 	
@@ -29,9 +29,9 @@ public class DownwardWs {
 	
 	public static String DownwardRequest (String strJsonTask, String strJsonIdentity) {
 		String jsonTask = "";
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
-		PostMethod postMethod = new PostMethod(HOST);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strJsonTask", strJsonTask);
@@ -77,12 +77,12 @@ public class DownwardWs {
 	public static byte[] DownwardTransmit (String strToken,String fileName, long lOffset, long lLength) {
 		
 		System.out.println(TAG+" strToken:"+strToken+" Offset:"+lOffset+"~~~~~~");
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		byte[] byteArrayData = null;
 		String response = null;
 		
-		PostMethod postMethod = new PostMethod(HOST);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[5];
 		postData[0] = new NameValuePair("strToken", strToken);
@@ -133,10 +133,10 @@ public class DownwardWs {
 	*/ 
 	
 	public static boolean DownwardFinish (String strToken) {
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		String excuteState = null;
-		PostMethod postMethod = new PostMethod(HOST);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[2];
 		postData[0] = new NameValuePair("strToken", strToken);

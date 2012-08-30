@@ -19,8 +19,8 @@ public class MidSynchronousActivity extends Activity {
 	private AppLogger log = AppLogger.getLogger(MidSynchronousActivity.class);
 	
 	Thread th;
-    Button b1;;
-    Button b2;;
+    Button b1;
+    Button b2;
     Button b3;
     
     @Override

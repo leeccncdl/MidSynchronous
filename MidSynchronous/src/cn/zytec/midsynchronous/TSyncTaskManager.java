@@ -21,8 +21,6 @@ import com.google.gson.Gson;
    */
 public class TSyncTaskManager implements ISyncTaskStorager {
 	private AppLogger log = AppLogger.getLogger("TSyncTaskManager");
-
-	private static final String DESCRIPTIONFILENAME = "Description.taskfile";
 	
 	private ITaskManagerEventListener listener;
 	private TSyncTaskDescriptions taskDescriptions;
@@ -38,14 +36,14 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	private void isDescriptionFileExist() {
 		String[] files = App.context.fileList();
 		for(int i=0,len=files.length;i<len;i++) {
-			if(files[i].equals(DESCRIPTIONFILENAME)) {
+			if(files[i].equals(App.DESCRIPTIONFILENAME)) {
 				return ;
 			}
 		}
 		
 		TSyncTaskDescriptions taskDescriptions = new TSyncTaskDescriptions();
 		Gson gson = new Gson();
-		AppFileUtils.writeFile(App.context, DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
+		AppFileUtils.writeFile(App.context, App.DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
 		
 	}
   
@@ -80,7 +78,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		
 		taskDescriptions.add(description);
 		//创建任务唯一的入口，将当前任务列表内容写入任务描述文件，每次重新写入
-		AppFileUtils.writeFile(App.context,DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
 		
 		//提交任务事件，在主控制器中具体处理。添加一个任务，就应该提交一个任务
 		putinTask(description);
@@ -111,7 +109,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		if(log.isDebugEnabled()) {
 			log.debug("UPDATE********************************");
 		}
-		AppFileUtils.writeFile(App.context,DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
 		return true;
 	}
 
@@ -196,7 +194,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		Gson gson = new Gson();
 		FileInputStream ins = null;
 		try {
-			ins = context.openFileInput(DESCRIPTIONFILENAME);
+			ins = context.openFileInput(App.DESCRIPTIONFILENAME);
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

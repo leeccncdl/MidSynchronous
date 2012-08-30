@@ -9,15 +9,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 
+import cn.zytec.lee.App;
+
 
 
 import android.content.Context;
 
 public class AppFileUtils {
 //	private AppLogger log = AppLogger.getLogger("AppFileUtils");
-	public static final String FILETAG = ".datafile";
-	private static final String DOWNSOURCEFILEPATH = "MidSync"+File.separator+"downLoadsourceFile"+File.separator;
-	private static final String UPSOURCEFILEPATH = "MidSync"+File.separator+"upwardSourceFile";
 	
 	private static SDFileUtils sd = new SDFileUtils();
 	
@@ -76,7 +75,7 @@ public class AppFileUtils {
 			}
 		} else {
 			//资源文件在SD卡上
-			sd.readFromSD(UPSOURCEFILEPATH, fileName, offset, length,buffer);
+			sd.readFromSD(App.UPSOURCEFILEPATH, fileName, offset, length,buffer);
 		}
 		return true;
 //		return buffer;
@@ -134,7 +133,7 @@ public class AppFileUtils {
 		SDFileUtils sd = new SDFileUtils();
 		if(isSourceFile) {//是资源文件，SD卡文件操作
 //			sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr, Context.MODE_APPEND);
-		sd.write2SD(DOWNSOURCEFILEPATH+sourceFileDir, fileName, writeByteArr, true);
+		sd.write2SD(App.DOWNSOURCEFILEPATH+sourceFileDir, fileName, writeByteArr, true);
 		} else {//不是资源文件
 			FileOutputStream os = null;
 			try {
@@ -164,7 +163,7 @@ public class AppFileUtils {
 		long length = 0;
 		
 		RandomAccessFile ra = null;
-		if(fileName.endsWith(FILETAG)) {
+		if(fileName.endsWith(App.DATAFILETAG)) {
 			try {
 				ra = new RandomAccessFile(context.getFileStreamPath(fileName),mode);
 				length = ra.length();
@@ -178,7 +177,7 @@ public class AppFileUtils {
 			}
 		} else {
 			SDFileUtils sd = new SDFileUtils();
-			length = sd.getFileSize(UPSOURCEFILEPATH, fileName, mode);
+			length = sd.getFileSize(App.UPSOURCEFILEPATH, fileName, mode);
 		}
 
 

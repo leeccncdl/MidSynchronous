@@ -9,23 +9,22 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
+import cn.zytec.lee.App;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class UpwardWs {
 	private static final String TAG = "TAG:UpwardWs";
-	private static final String HOST = "http://192.168.4.117:8080/MidSynchronous/servlet/ServletEntrance";
-	private static final int TIMEOUT = 20000;
 	private static HttpClient httpclient = new HttpClient();
 	
 	public static String UpwardRequest (String strJsonTask, String strJsonIdentity) {
 		
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		
 		String token = null;
-		PostMethod postMethod = new PostMethod(HOST);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strJsonTask", strJsonTask);
@@ -62,13 +61,13 @@ public class UpwardWs {
 	
 	public static boolean UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
 
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		
 		System.out.println(TAG +" fileName:"+fileName+" Offset:"+lOffset+"~~~~~~");
 		
 		String returnString = null;
-		PostMethod postMethod = new PostMethod(HOST);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[5];
 		postData[0] = new NameValuePair("strToken", strToken);
@@ -117,13 +116,13 @@ public class UpwardWs {
 	
 	public static boolean UpwardFinish (String strToken, boolean bTrash) {
 		
-		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(TIMEOUT);
-		httpclient.getHttpConnectionManager().getParams().setSoTimeout(TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
+		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		
 		boolean excuteState = false;
 
 		String btra = bTrash?"true":"false";
-		PostMethod postMethod = new PostMethod(HOST);
+		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
 		postData[0] = new NameValuePair("strToken", strToken);

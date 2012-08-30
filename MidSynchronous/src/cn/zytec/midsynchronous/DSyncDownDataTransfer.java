@@ -24,8 +24,6 @@ import cn.zytec.midsynchronous.ws.DownwardWs;
 public class DSyncDownDataTransfer extends Thread {
 	private AppLogger log = AppLogger.getLogger("DSyncDownDataTransfer");
 
-	private static final String SEP = "!@#";
-	private static final int EVERYTIMETRANSSIZE = 102400;
 	private IDownDataTransferEventListener listener;
 	private List<SyncTaskDescription> downTaskDescriptions;// 下行同步数据传输任务列表
 
@@ -172,11 +170,11 @@ public class DSyncDownDataTransfer extends Thread {
 				return false;
 			}
 
-			String token = jsonTask.split(SEP)[0]+SEP+jsonTask.split(SEP)[1];
+			String token = jsonTask.split(App.SEP)[0]+App.SEP+jsonTask.split(App.SEP)[1];
 //			System.out.println("++++++++++++++"+token+"++++++++++++++");
 			description.setAssociateId(token);
-			if(jsonTask.split(SEP).length == 3) {
-				SyncTaskDescription taskDescription = gson.fromJson(jsonTask.split(SEP)[2], SyncTaskDescription.class);
+			if(jsonTask.split(App.SEP).length == 3) {
+				SyncTaskDescription taskDescription = gson.fromJson(jsonTask.split(App.SEP)[2], SyncTaskDescription.class);
 				updateDescription(description,taskDescription);
 			} else {
 				if(log.isDebugEnabled()) {
@@ -222,7 +220,7 @@ public class DSyncDownDataTransfer extends Thread {
 			String key = item.getKey();
 			SyncFileDescription value = item.getValue();
 			// 调用单个文件传输方法,判断是数据文件还是资源文件，使用同一的后缀判断
-			boolean isSourceFile = !key.endsWith(AppFileUtils.FILETAG);
+			boolean isSourceFile = !key.endsWith(App.DATAFILETAG);
 			if (!value.getAuxiliary().equals("Done")) {
 		
 				if (!inceptFile(key, value, description.getAssociateId(),
@@ -253,21 +251,21 @@ public class DSyncDownDataTransfer extends Thread {
 		/*******************断点相关处理*********************/
 		long transferSize = fileDes.getTransSize();
 		byte[] buffer = null;
-		int alreadyTransTimes = (int)transferSize/EVERYTIMETRANSSIZE;
+		int alreadyTransTimes = (int)transferSize/App.EVERYTIMETRANSSIZE;
 		while (true) {
-			System.out.println(fileName+"  Offset"+((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1));
+			System.out.println(fileName+"  Offset"+((App.EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : App.EVERYTIMETRANSSIZE * alreadyTransTimes - 1));
 			buffer = DownwardWs.DownwardTransmit(token,fileName,
-					((EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : EVERYTIMETRANSSIZE * alreadyTransTimes - 1), EVERYTIMETRANSSIZE);
+					((App.EVERYTIMETRANSSIZE * alreadyTransTimes) - 1 == -1 ? 0 : App.EVERYTIMETRANSSIZE * alreadyTransTimes - 1), App.EVERYTIMETRANSSIZE);
 
 			if (buffer!=null && buffer.length != 0) {
 				AppFileUtils.writeFile(App.context, fileName,
 						buffer, Context.MODE_APPEND,isSourceFile,description.getTaskId());
-				if(buffer.length != EVERYTIMETRANSSIZE) {
+				if(buffer.length != App.EVERYTIMETRANSSIZE) {
 					fileDes.setAuxiliary("Done");
 					taskDataIncept(description);
 					break;
 				} else {
-					fileDes.setTransSize(EVERYTIMETRANSSIZE*(alreadyTransTimes+1));
+					fileDes.setTransSize(App.EVERYTIMETRANSSIZE*(alreadyTransTimes+1));
 				}
 				taskDataIncept(description);
 			} else {

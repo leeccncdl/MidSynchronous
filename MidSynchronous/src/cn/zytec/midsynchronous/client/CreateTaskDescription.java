@@ -13,6 +13,11 @@ import cn.zytec.midsynchronous.SyncFileDescription;
 import cn.zytec.midsynchronous.SyncTaskDescription;
 import cn.zytec.midsynchronous.utils.AppFileUtils;
 
+/**
+   * 创建任务描述的类，可以创建上行任务和下行任务的描述
+   * @author: lee
+   * @modify date: 2012-8-29 下午03:55:42
+   */
 public class CreateTaskDescription {
 //	private AppLogger log = AppLogger.getLogger("CreateTaskDescription");
 	//上行任务的数据文件存储在一个固定的SD卡文件夹路径。

@@ -23,9 +23,6 @@ public class DSyncUpDataTransfer extends Thread {
 
 	private AppLogger log = AppLogger.getLogger("DSyncUpDataTransfer");
 
-	private static final String SEP = "!@#";
-	private static final int EVERYTIMETRANSSIZE = 102400;
-
 	private IUpDataTransferEventListener listener;
 	private List<SyncTaskDescription> upTaskDescriptions;// 上行同步数据传输任务描述列表
 
@@ -183,7 +180,7 @@ public class DSyncUpDataTransfer extends Thread {
 				iterator.remove();
 				return false;
 			}
-			String newTaskId = token.split(SEP)[0];
+			String newTaskId = token.split(App.SEP)[0];
 			System.out.println("newTaskId:" + newTaskId);
 			description.setTaskId(newTaskId);
 
@@ -228,7 +225,7 @@ public class DSyncUpDataTransfer extends Thread {
 			String key = item.getKey();
 			SyncFileDescription value = item.getValue();
 			// 调用单个文件传输方法，判断是资源文件还是数据文件
-			boolean isSourceFile = !key.endsWith(AppFileUtils.FILETAG);
+			boolean isSourceFile = !key.endsWith(App.DATAFILETAG);
 
 			if (!value.getAuxiliary().equals("Done")) {
 				System.out.println("当前传输的文件"+isSourceFile);
@@ -258,16 +255,16 @@ public class DSyncUpDataTransfer extends Thread {
 	private boolean transFile(String fileName, SyncFileDescription fileDes,
 			String token, SyncTaskDescription description, boolean isSourceFile) {
 
-		byte[] buffer = new byte[EVERYTIMETRANSSIZE];
+		byte[] buffer = new byte[App.EVERYTIMETRANSSIZE];
 		long length = fileDes.getFileSize();
 
 		/******** 处理断点情况 *************************/
 		long transSize = fileDes.getTransSize();
-		int transTimes = (int) transSize / EVERYTIMETRANSSIZE;
+		int transTimes = (int) transSize / App.EVERYTIMETRANSSIZE;
 		/******** 处理断点情况结束 *************************/
 
 		// 总次数 - 已传输次数
-		double times = Math.ceil(length / (double) EVERYTIMETRANSSIZE)
+		double times = Math.ceil(length / (double) App.EVERYTIMETRANSSIZE)
 				- transTimes;// 有断点相关修改
 
 //		System.out.println("需要传输的次数：" + times);
@@ -278,16 +275,16 @@ public class DSyncUpDataTransfer extends Thread {
 			if (!((times - 1) == i)) {
 				// 其他正常情况
 				AppFileUtils.readFile(App.context, fileName,
-						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
-								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
-						EVERYTIMETRANSSIZE, "r", isSourceFile,buffer);// ///
+						((App.EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
+								: App.EVERYTIMETRANSSIZE * (i + transTimes) - 1),
+								App.EVERYTIMETRANSSIZE, "r", isSourceFile,buffer);// ///
 				if (UpwardWs.UpwardTransmit(
 						token,
 						fileName,
-						((EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
-								: EVERYTIMETRANSSIZE * (i + transTimes) - 1),
+						((App.EVERYTIMETRANSSIZE * (i + transTimes)) - 1 == -1 ? 0
+								: App.EVERYTIMETRANSSIZE * (i + transTimes) - 1),
 						buffer)) {// //////////////
-					fileDes.setTransSize(EVERYTIMETRANSSIZE
+					fileDes.setTransSize(App.EVERYTIMETRANSSIZE
 							* ((i + transTimes) + 1));// //////////////
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
@@ -302,22 +299,22 @@ public class DSyncUpDataTransfer extends Thread {
 
 			} else {// 最后一次传输
 
-				int lastlength = (int) (length - EVERYTIMETRANSSIZE
+				int lastlength = (int) (length - App.EVERYTIMETRANSSIZE
 						* (times + transTimes - 1));// 有断点相关修改
 				System.out.println("LASTLENGTH" + lastlength);
 
 				byte[] bufferLast = new byte[lastlength];
 
 				AppFileUtils.readFile(App.context, fileName,
-						EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",
+						App.EVERYTIMETRANSSIZE * (i + transTimes), lastlength, "r",
 						isSourceFile,bufferLast);// 有断点相关修改
 				/*******************/
 				// AppFileUtils.writeFile(App.getInstance(), fileName+".t",
 				// bufferLast, Context.MODE_APPEND);
 				// ///////////////////////////////////////////////
 				if (UpwardWs.UpwardTransmit(token, fileName,
-						EVERYTIMETRANSSIZE * (i + transTimes), bufferLast)) {// 有断点相关修改
-					fileDes.setTransSize(EVERYTIMETRANSSIZE * (i + transTimes)
+						App.EVERYTIMETRANSSIZE * (i + transTimes), bufferLast)) {// 有断点相关修改
+					fileDes.setTransSize(App.EVERYTIMETRANSSIZE * (i + transTimes)
 							+ lastlength);// 有断点相关修改
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {

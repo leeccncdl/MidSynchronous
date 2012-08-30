@@ -15,8 +15,6 @@ import cn.zytec.lee.AppLogger;
 public class StSyncStateDistribute extends Thread{
 	private AppLogger log = AppLogger.getLogger("StSyncStateDistribute");
 
-	private volatile boolean isStopThread = false;
-	
 	private IStateDistributeEventListener listener;
 	private List<SyncTaskDescription> distributeDescriptions;
 	
@@ -64,7 +62,7 @@ public class StSyncStateDistribute extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		if(log.isDebugEnabled()) {
-			log.debug("同步状态分发线程运行！"+!isStopThread+Thread.currentThread().getName());
+			log.debug("同步状态分发线程运行！"+Thread.currentThread().getName());
 		}
 
 		while(true) {
