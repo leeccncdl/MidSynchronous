@@ -21,7 +21,7 @@ public class EStateDistributeEvent extends EventObject {
 	public EStateDistributeEvent(Object source,SyncTaskDescription description) {
 		super(source);
 		this.distributeTaskDescription = description;
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public SyncTaskDescription getDistributeTaskDescription() {

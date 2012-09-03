@@ -16,7 +16,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	private AppLogger log = AppLogger.getLogger("DSyncUpdateDataDispatch");
 
-	private IUpdateDataEventListener listener;	
+	private IUpdateDataEventListener listener;
 	private List<SyncTaskDescription> updateDataDescriptions;
 
 	public DSyncUpdateDataDispatch (ClientSyncController c) {

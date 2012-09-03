@@ -22,7 +22,7 @@ public class LoggerConfigure {
 	
 	public static String logTag = "APPLOG";
 	
-	public static String logLocation = null;//Logwen文件路径的配置
+	public static String logLocation = null;//Log文件路径的配置
 	
 	public static String fileName = "log_";
 	

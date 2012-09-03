@@ -159,7 +159,6 @@ public class DSyncUpDataTransfer extends Thread {
 
 	private boolean runUpDataTransfer(Iterator<SyncTaskDescription> iterator) {
 		SyncTaskDescription description = null;
-		Gson gson = new Gson();
 		while (iterator.hasNext()) {
 			description = iterator.next();
 			if (log.isDebugEnabled()) {
@@ -171,7 +170,7 @@ public class DSyncUpDataTransfer extends Thread {
 
 			// 上行请求返回token
 			String token = null;
-			token = UpwardWs.UpwardRequest(gson.toJson(description), "lee");// 用户验证信息如何传入？？
+			token = UpwardWs.UpwardRequest(new Gson().toJson(description), App.USER+App.PASSWORD);// 用户验证信息如何传入？？
 			System.out.println("Token：" + token);
 			if (token == null) {
 				if (log.isDebugEnabled()) {
@@ -191,7 +190,6 @@ public class DSyncUpDataTransfer extends Thread {
 			// 数据传输,返回true标识传输完毕
 			if (transmitDescriptionDataFile(description)) {// 任务文件传输
 				if(UpwardWs.UpwardFinish(description.getAssociateId(), false)) {
-					System.out.println("上行任务结束返回错误");
 					taskTransferComplete(description);// 任务传输结束事件
 				}
 				// 移除本类列表中的该任务
@@ -259,10 +257,8 @@ public class DSyncUpDataTransfer extends Thread {
 		long length = fileDes.getFileSize();
 
 		/******** 处理断点情况 *************************/
-		long transSize = fileDes.getTransSize();
-		int transTimes = (int) transSize / App.EVERYTIMETRANSSIZE;
+		int transTimes = (int) fileDes.getTransSize() / App.EVERYTIMETRANSSIZE;
 		/******** 处理断点情况结束 *************************/
-
 		// 总次数 - 已传输次数
 		double times = Math.ceil(length / (double) App.EVERYTIMETRANSSIZE)
 				- transTimes;// 有断点相关修改
@@ -286,6 +282,7 @@ public class DSyncUpDataTransfer extends Thread {
 						buffer)) {// //////////////
 					fileDes.setTransSize(App.EVERYTIMETRANSSIZE
 							* ((i + transTimes) + 1));// //////////////
+					System.out.println("SSSSSSSSSSSSSSS返回值时间"+System.currentTimeMillis());
 					taskDataSend(description);// 控制器控制其他线程写入文件
 				} else {
 					if (log.isDebugEnabled()) {

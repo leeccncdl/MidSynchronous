@@ -2,6 +2,11 @@ package cn.zytec.lee;
 
 import java.util.List;
 
+/**
+   * 中间件测试数据模型
+   * @author: lee
+   * @modify date: 2012-8-30 下午01:33:15
+   */
 public class TestDao {
 	private int id;
 	private int age;

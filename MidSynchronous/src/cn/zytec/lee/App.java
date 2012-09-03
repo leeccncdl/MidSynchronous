@@ -47,6 +47,11 @@ public class App extends Application {
 	 * 服务器连接和返回超时时间
 	 */
 	public static final int TIMEOUT = 20000;
+	
+	public static String USER = "liming";
+	public static String PASSWORD = "PASS";
+	
+	
 	@Override
     public void onCreate() {
         // TODO Auto-generated method stub

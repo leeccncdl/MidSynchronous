@@ -160,7 +160,7 @@ public class DSyncDownDataTransfer extends Thread {
 			taskTansferStart(description);
 		
 			//请求
-			String jsonTask = DownwardWs.DownwardRequest(gson.toJson(description), "lee");
+			String jsonTask = DownwardWs.DownwardRequest(gson.toJson(description), App.USER+App.PASSWORD);
 			if(jsonTask==null||jsonTask.equals("")) {
 				if(log.isDebugEnabled()) {
 					log.debug("下行申请返回错误");
@@ -245,8 +245,6 @@ public class DSyncDownDataTransfer extends Thread {
 	
 	private boolean inceptFile(String fileName, SyncFileDescription fileDes,
 			String token, SyncTaskDescription description, boolean isSourceFile) {
-
-		boolean result = true;
 		
 		/*******************断点相关处理*********************/
 		long transferSize = fileDes.getTransSize();
@@ -271,12 +269,11 @@ public class DSyncDownDataTransfer extends Thread {
 			} else {
 				System.out.println("接收数据失败，中止！");
 				alreadyTransTimes = 0;
-				result = false;
-				break;
+				return false;
 			}
 			alreadyTransTimes++;
 		}
-		return result;
+		return true;
 	}
 	
 	/** 

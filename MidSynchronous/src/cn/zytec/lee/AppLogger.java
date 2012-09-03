@@ -11,6 +11,7 @@ public class AppLogger extends Logger {
 	public static boolean config(Context context){
 		LoggerConfigure.logTag = "MidSync";
 		LoggerConfigure.logLevel = LogLevel.DEBUG;
+		LoggerConfigure.logLocation = null;
 		return true;
 	}
 	

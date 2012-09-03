@@ -6,7 +6,7 @@ import cn.zytec.midsynchronous.client.ISyncStateMonitor;
 
 /**
    * @ClassName  ClientSyncController
-   * @Description 客户端同步控制器 
+   * @Description 客户端同步控制器，负责中间件协调运行的中心组件
    * @author lee
    * @modify date: 2012-6-27 下午02:39:02
    */
@@ -62,17 +62,15 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		taskManager = new TSyncTaskManager(this);
 		updateDataDispatch = new DSyncUpdateDataDispatch(this);
 		
-		//启动各个线程方式已经更改，由添加各组件任务时自动启动线程
 		upDataTransfer.start();
 		downDataTransfer.start();
 		stateDistribute.start();
 		updateDataDispatch.start();
-	
 	}
 	
 
 	/** 
-	* 执行任务文件中未执行完的任务方法    
+	* 执行任务文件中未执行完的任务
 	* @return void
 	* @throws 
 	*/ 
@@ -110,6 +108,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	}
 	
 	
+	/******************************作为监听器，处理触发事件的方法*********************************/
 	@Override
 	public void updateDataEvent(EUpdateDataEvent event) {
 		// TODO Auto-generated method stub
@@ -216,7 +215,22 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 			break;
 		}
 	}
+	/**************************************************************************/
 	
+	/** 
+	* 状态异常分发 ，应用注册的状态监控组件执行处理
+	* @param stateException 异常代码 
+	* @return void    
+	* @throws 
+	*/ 
+	
+	public static void stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode stateException) {
+		if(stateMonitor==null) {
+			System.out.println("状态监控模块没有注册");
+		} else {
+			stateMonitor.clientStateException(stateException);
+		}
+	}
 	
 	/** 
 	* 任务提交方法      
@@ -233,7 +247,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		}
 
 		if(description.getSource().equals("UP")){//上行
-			upDataTransfer.addTaskToUpDataTransfer(description);//添加到上行同步数据传输器
+			upDataTransfer.addTaskToUpDataTransfer(description);
 		} else if (description.getSource().equals("DOWN")) { //下行
 			downDataTransfer.addTaskToDownDataTransfer(description);
 		} else {
@@ -243,8 +257,8 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		}
 		//直接更改当前任务状态信息为草稿态
 		description.setTaskState(SyncTaskDescription.SynTaskState.DRAFT);
-		//状态分发，可以省略。。。。意义不大
-		stateDistribute.addStateDistribute(description);
+		//状态分发的意义不大，先省略了
+//		stateDistribute.addStateDistribute(description);
 	}
 	
 
@@ -264,16 +278,8 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 				log.debug("应用程序没有注册状态监控组件");
 			}
 		} else {
-			/**这里传的参数还需要修改，应该携带更多的任务信息*******/
+			/***************这里传的参数还需要修改，应该携带更多的任务信息****************/
 			stateMonitor.clientStateUpdate(description.getTaskState());
-		}
-	}
-	
-	public static void stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode stateException) {
-		if(stateMonitor==null) {
-			System.out.println("状态监控模块没有注册");
-		} else {
-			stateMonitor.clientStateException(stateException);
 		}
 	}
 	
@@ -297,7 +303,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 
  
 	/** 
-	* 任务传输启动，通过任务控制器修改任务状态，同时将任务加入到状态分发器
+	* 任务传输启动，修改任务状态，同时将任务加入到状态分发器
 	* @param taskDescription  任务描述   
 	* @return void
 	* @throws 
@@ -314,7 +320,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	 
 	
 	/** 
-	* 任务申请完成，通过控制器修改任务状态，更新任务（将任务列表文件更新，持久化保存任务状态）。 同时将任务加入到状态分发器。
+	* 任务申请完成，任务状态，更新任务（将任务列表文件更新，持久化保存任务状态）。 同时将任务加入到状态分发器。
 	* @param taskDescription  任务描述对象
 	* @return void
 	* @throws 
@@ -329,7 +335,6 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		taskManager.update(taskDescription);//将修改任务名称，token以及任务状态写入文件
 		stateDistribute.addStateDistribute(taskDescription) ;
 	}
-	
 	
 	/** 
 	* 下行任务数据接收，通过控制器更新任务状态，更新任务描述列表文件，保存最新状态，同时将任务添加到状态分发器
@@ -346,7 +351,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	}
 	
 	/** 
-	* 下行任务传输完成，任务管理器修改任务状态 ，状态分发，更新调度器添加任务，任务管理器删除任务.更新任务描述文件。
+	* 下行任务传输完成，修改任务状态 ，状态分发，更新调度器添加任务，任务管理器删除任务.更新任务描述文件。
 	* @param taskDescription     
 	* @return void
 	* @throws 
@@ -378,8 +383,8 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	
 	/** 
-	* 下行任务数据发送 
-	* @param taskDescription     
+	* 上行任务数据发送 
+	* @param taskDescription 任务描述对象     
 	* @return void
 	* @throws 
 	*/ 
@@ -397,7 +402,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	/** 
 	* 上行任务传输完成
-	* @param taskDescription     
+	* @param taskDescription 任务描述对象
 	* @return void
 	* @throws 
 	*/ 
@@ -416,7 +421,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 
 	/** 
 	* 更新完成
-	* @param taskDescription     
+	* @param taskDescription   任务描述对象  
 	* @return void
 	* @throws 
 	*/ 

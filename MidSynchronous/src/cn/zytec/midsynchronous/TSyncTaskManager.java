@@ -21,9 +21,11 @@ import com.google.gson.Gson;
    */
 public class TSyncTaskManager implements ISyncTaskStorager {
 	private AppLogger log = AppLogger.getLogger("TSyncTaskManager");
+	private static Object lock = new Object();
 	
 	private ITaskManagerEventListener listener;
 	private TSyncTaskDescriptions taskDescriptions;
+	private Gson gson = new Gson();
 	
 	public TSyncTaskManager (ClientSyncController c) {
 		listener = c;
@@ -42,7 +44,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		}
 		
 		TSyncTaskDescriptions taskDescriptions = new TSyncTaskDescriptions();
-		Gson gson = new Gson();
 		AppFileUtils.writeFile(App.context, App.DESCRIPTIONFILENAME, gson.toJson(taskDescriptions), Context.MODE_PRIVATE);	
 		
 	}
@@ -57,7 +58,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		TSyncTaskDescriptions loadTasks = readDescriptionFile(App.context);
 		taskDescriptions.getArrTaskDescriptions().clear();//添加之前清空内存中的可能存在的任务
 		if(loadTasks.getArrTaskDescriptions().size()!=0) {
-			loadTasks.setCount(loadTasks.getArrTaskDescriptions().size());
+//			loadTasks.setCount(loadTasks.getArrTaskDescriptions().size());
 			for (SyncTaskDescription syncTaskDescription : loadTasks.getArrTaskDescriptions()) {
 				taskDescriptions.add(syncTaskDescription);
 				putinTask(syncTaskDescription);
@@ -76,9 +77,13 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	@Override
 	public void create(SyncTaskDescription description){
 		
+		
 		taskDescriptions.add(description);
 		//创建任务唯一的入口，将当前任务列表内容写入任务描述文件，每次重新写入
-		AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		synchronized (lock) {
+			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+			
+		}
 		
 		//提交任务事件，在主控制器中具体处理。添加一个任务，就应该提交一个任务
 		putinTask(description);
@@ -109,7 +114,10 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		if(log.isDebugEnabled()) {
 			log.debug("UPDATE********************************");
 		}
-		AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		/*****************冲突处理！！！*******************************************/
+		synchronized (lock) {
+			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+		}
 		return true;
 	}
 
@@ -191,7 +199,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	
 	private TSyncTaskDescriptions readDescriptionFile(Context context) {
 		
-		Gson gson = new Gson();
 		FileInputStream ins = null;
 		try {
 			ins = context.openFileInput(App.DESCRIPTIONFILENAME);
@@ -214,7 +221,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TSyncTaskDescriptions taskDescriptions = gson.fromJson(sb.toString(), TSyncTaskDescriptions.class);
+		TSyncTaskDescriptions taskDescriptions = new Gson().fromJson(sb.toString(), TSyncTaskDescriptions.class);
 		return taskDescriptions;
 		
 	}

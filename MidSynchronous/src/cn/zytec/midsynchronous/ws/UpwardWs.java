@@ -1,6 +1,7 @@
 package cn.zytec.midsynchronous.ws;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -12,6 +13,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import cn.zytec.lee.App;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
+import cn.zytec.midsynchronous.utils.AppFileUtils;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class UpwardWs {
@@ -60,7 +62,6 @@ public class UpwardWs {
 	}
 	
 	public static boolean UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
-
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
 		
@@ -81,15 +82,19 @@ public class UpwardWs {
 		}
 	
 		postMethod.addParameters(postData);
-		
+
 		try {
+			Date d1 = new Date();
 			int statusCode = httpclient.executeMethod(postMethod);
+			Date d2 = new Date();
 			if(statusCode != HttpStatus.SC_OK) {
 				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
 			returnString = postMethod.getResponseBodyAsString();
+			
+			System.out.println("时间差：：：：：："+AppFileUtils.getDateDiff(d2,d1));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -138,7 +143,7 @@ public class UpwardWs {
 				return false;
 			}
 
-			excuteState = (postMethod.getResponseBodyAsString().equals("true")?true:false);
+			excuteState = (postMethod.getResponseBodyAsString().equals("1")?true:false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
@@ -146,7 +151,7 @@ public class UpwardWs {
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
-		
+		System.out.println("UUUUUUUUUUUUUUUUUUUUUUUU上行完成请求结束"+ excuteState);
 		return excuteState;
 	}
 }

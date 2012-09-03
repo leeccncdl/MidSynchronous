@@ -15,9 +15,9 @@ public interface ISyncStateMonitor {
 	   * @modify date: 2012-8-29 下午03:58:42
 	   */
 	public enum StateExceptionCode {
-		SER_AUTH_FAIL,//
-		SER_SESSION_INVALID,
-		HTTP_STATUS_EXCEP;
+		SER_AUTH_FAIL,//服务器身份验证失败
+		SER_SESSION_INVALID,//服务器验证Session过期
+		HTTP_STATUS_EXCEP;//Http返回状态码异常
 	}
 	
 	/** 

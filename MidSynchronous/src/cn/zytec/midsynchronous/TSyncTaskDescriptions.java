@@ -17,12 +17,12 @@ import cn.zytec.midsynchronous.utils.AppFileUtils;
 public class TSyncTaskDescriptions {
 	
 
-	private int count;
+//	private int count;
 	private List<SyncTaskDescription> arrTaskDescriptions;
 	
-	public void setCount(int count) {
-		this.count = count;
-	}
+//	public void setCount(int count) {
+//		this.count = count;
+//	}
 
 	public void setArrTaskDescriptions(List<SyncTaskDescription> arrTaskDescriptions) {
 		this.arrTaskDescriptions = arrTaskDescriptions;
@@ -30,7 +30,7 @@ public class TSyncTaskDescriptions {
 
 	public TSyncTaskDescriptions () {
 		arrTaskDescriptions = new ArrayList<SyncTaskDescription> (); 
-		count = 0;
+//		count = 0;
 	}
 	
 	public SyncTaskDescription searchTaskByIndex (int nIndex) {
@@ -50,9 +50,9 @@ public class TSyncTaskDescriptions {
 		return false;
 	}
 	
-	public int getCount() {
-		return count;
-	}
+//	public int getCount() {
+//		return count;
+//	}
 
 	public List<SyncTaskDescription> getArrTaskDescriptions() {
 		return arrTaskDescriptions;
@@ -68,7 +68,7 @@ public class TSyncTaskDescriptions {
 	
 	public void add (SyncTaskDescription description) {
 		arrTaskDescriptions.add(description);
-		count++;
+//		count++;
 		System.out.println(Thread.currentThread().getName()+"TSyncTaskDescriptions:任务添加到任务列表中，并且写入任务列表持久化文件中");
 		//写入任务持久化文件 应该单独写一个接口，在这调用下。因为任务状态变化的时候同样也要写入任务持久化文件
 	}
@@ -81,7 +81,7 @@ public class TSyncTaskDescriptions {
 				//删除数据文件方法
 //				clearDataFile(arrTaskDescriptions.get(i));
 				arrTaskDescriptions.remove(i);
-				count--;
+//				count--;
 				return;
 			}
 		}

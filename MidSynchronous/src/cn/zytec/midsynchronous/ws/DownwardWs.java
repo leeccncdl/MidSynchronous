@@ -165,7 +165,7 @@ public class DownwardWs {
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
-		return (excuteState.equals("true"));
+		return (excuteState.equals("1"));
 		
 	}
 	
