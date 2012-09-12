@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import android.content.Context;
 import cn.zytec.lee.App;
 import cn.zytec.lee.AppLogger;
@@ -81,8 +85,19 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		taskDescriptions.add(description);
 		//创建任务唯一的入口，将当前任务列表内容写入任务描述文件，每次重新写入
 		synchronized (lock) {
-			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
-			
+//			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);		
+			try {
+				AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new ObjectMapper().writeValueAsString(taskDescriptions), Context.MODE_PRIVATE);
+			} catch (JsonGenerationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
 		}
 		
 		//提交任务事件，在主控制器中具体处理。添加一个任务，就应该提交一个任务
@@ -116,7 +131,20 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 		}
 		/*****************冲突处理！！！*******************************************/
 		synchronized (lock) {
-			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+			
+//			AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new Gson().toJson(taskDescriptions), Context.MODE_PRIVATE);
+			try {
+				AppFileUtils.writeFile(App.context,App.DESCRIPTIONFILENAME, new ObjectMapper().writeValueAsString(taskDescriptions), Context.MODE_PRIVATE);
+			} catch (JsonGenerationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
