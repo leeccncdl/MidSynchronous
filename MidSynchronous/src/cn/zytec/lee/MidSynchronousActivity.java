@@ -70,7 +70,7 @@ public class MidSynchronousActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+
 				th = new Thread() {
 					public void run() {
 						taskControl.startUpTransTask(CreateTaskDescription
@@ -88,7 +88,7 @@ public class MidSynchronousActivity extends Activity {
 		b2.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+
 				th = new Thread() {
 					public void run() {
 						taskControl.startDownTransTask(CreateTaskDescription
@@ -105,7 +105,7 @@ public class MidSynchronousActivity extends Activity {
 		b3.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+
 				th = new Thread() {
 					public void run() {
 						// Test t = new Test();

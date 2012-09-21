@@ -123,7 +123,6 @@ public class DSyncDownDataTransfer extends Thread {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		while(true) {
 			synchronized(this) {
 				while(downTaskDescriptions.size()>0) {
@@ -131,7 +130,6 @@ public class DSyncDownDataTransfer extends Thread {
 						try {
 							this.wait();
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -139,7 +137,6 @@ public class DSyncDownDataTransfer extends Thread {
 				try {
 					this.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

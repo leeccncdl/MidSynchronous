@@ -22,7 +22,6 @@ public class AppDataUpdate implements ISyncDataUpdate{
 	
 	@Override
 	public void clientDataUpdate(String taskDataString, List<String> sourceFiles) {
-		// TODO Auto-generated method stub
 		if(log.isDebugEnabled()) {
 			log.debug("应用程序数据更新执行 "+"数据字符串："+taskDataString+"资源文件列表：");
 		}

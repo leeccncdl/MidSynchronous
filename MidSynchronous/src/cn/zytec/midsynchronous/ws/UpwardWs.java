@@ -46,7 +46,6 @@ public class UpwardWs {
 //			httpclient.executeMethod(postMethod);
 			token = postMethod.getResponseBodyAsString();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			e.printStackTrace();
 		} finally {
@@ -97,7 +96,6 @@ public class UpwardWs {
 			System.out.println("时间差：：：：：："+AppFileUtils.getDateDiff(d2,d1));
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();

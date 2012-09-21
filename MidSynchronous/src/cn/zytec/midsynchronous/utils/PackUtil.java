@@ -3,7 +3,7 @@ package cn.zytec.midsynchronous.utils;
 public class PackUtil {
 	/**
 	 * @Title: makeDatatoFile
-	 * @Description: TODO 封包
+	 * @Description: 封包
 	 * @return
 	 * @return String 文件路径
 	 * @throws

@@ -54,7 +54,6 @@ public class DownwardWs {
 				System.out.println(TAG+"下行申请Session过期");
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
@@ -109,7 +108,6 @@ public class DownwardWs {
 			}
 			//1成功  -1验证失败  -2session过期
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
@@ -159,7 +157,6 @@ public class DownwardWs {
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			e.printStackTrace();

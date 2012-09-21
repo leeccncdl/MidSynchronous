@@ -60,7 +60,7 @@ public class TSyncTaskDescriptions {
 
 	/** 
 	* @Title: add 
-	* @Description: TODO 将任务添加到任务列表中，并且写入任务持久化文件中 
+	* @Description: 将任务添加到任务列表中，并且写入任务持久化文件中 
 	* @param description     
 	* @return void
 	* @throws 

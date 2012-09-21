@@ -40,7 +40,7 @@ public class AppStateMonitor implements ISyncStateMonitor {
 	
 	@Override
 	public void clientStateException(StateExceptionCode exceptionCode) {
-		// TODO Auto-generated method stub
+
 		if(log.isDebugEnabled()) {
 			log.debug("应用程序状态错误接收:"+exceptionCode);
 		}

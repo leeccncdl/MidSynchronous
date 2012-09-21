@@ -12,7 +12,7 @@ public interface IUpDataTransferEventListener extends EventListener {
 	
 	/** 
 	* @Title: upDataTransferEvent 
-	* @Description: TODO 上行数据传输事件监听的处理
+	* @Description: 上行数据传输事件监听的处理
 	* @param event     
 	* @return void
 	* @throws 

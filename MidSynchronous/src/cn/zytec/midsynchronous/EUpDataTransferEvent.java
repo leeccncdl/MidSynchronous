@@ -35,7 +35,6 @@ public class EUpDataTransferEvent extends EventObject {
 		super(source);
 		this.upDatTraEveDescription = description;
 		this.taskDescription = taskDescription;
-		// TODO Auto-generated constructor stub
 	}
 
 	public UpDataTraEveDescription getUpDatTraEveDescription() {

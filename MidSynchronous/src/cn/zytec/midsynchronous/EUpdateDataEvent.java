@@ -33,7 +33,6 @@ public class EUpdateDataEvent extends EventObject {
 		super(source);
 		this.upDateDataEventDescription = description;
 		this.taskDescription = taskDescription;
-		// TODO Auto-generated constructor stub
 	}
 
 	public SyncTaskDescription getTaskDescription() {

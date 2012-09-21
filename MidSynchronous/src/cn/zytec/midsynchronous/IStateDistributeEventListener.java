@@ -12,7 +12,7 @@ public interface IStateDistributeEventListener extends EventListener {
 	
 	/** 
 	* @Title: stateDistributeEvent 
-	* @Description: TODO 同步状态分发事件监听的处理
+	* @Description: 同步状态分发事件监听的处理
 	* @param event     
 	* @return void
 	* @throws 

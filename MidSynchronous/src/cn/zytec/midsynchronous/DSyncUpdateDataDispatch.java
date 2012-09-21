@@ -35,7 +35,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	/** 
 	* @Title: updateExcute 
-	* @Description: TODO 更新执行      
+	* @Description:  更新执行      
 	* @return void
 	* @throws 
 	*/ 
@@ -47,7 +47,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	/** 
 	* @Title: updateComplete 
-	* @Description: TODO  更新完成   
+	* @Description:  更新完成   
 	* @return void
 	* @throws 
 	*/ 
@@ -59,7 +59,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 	
 	/** 
 	* @Title: updateError 
-	* @Description: TODO 更新错误      
+	* @Description: 更新错误      
 	* @return void
 	* @throws 
 	*/
@@ -71,7 +71,6 @@ public class DSyncUpdateDataDispatch extends Thread {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		if(log.isDebugEnabled()) {
 			log.debug("数据更新调度器线程运行！"+Thread.currentThread().getName());
 		}

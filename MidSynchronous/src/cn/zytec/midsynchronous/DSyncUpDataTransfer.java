@@ -124,7 +124,6 @@ public class DSyncUpDataTransfer extends Thread {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		while (true) {
 			synchronized (this) {
 				while (upTaskDescriptions.size() > 0) {

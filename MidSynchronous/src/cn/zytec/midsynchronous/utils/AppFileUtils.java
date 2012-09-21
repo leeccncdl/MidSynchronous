@@ -148,7 +148,6 @@ public class AppFileUtils {
 			try {
 				os = context.openFileOutput(fileName, mode);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("打开文件异常！");
 			}

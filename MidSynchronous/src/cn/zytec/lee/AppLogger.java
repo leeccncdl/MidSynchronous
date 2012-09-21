@@ -29,7 +29,6 @@ public class AppLogger extends Logger {
 	
 	public AppLogger(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

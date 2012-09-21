@@ -12,7 +12,7 @@ public interface IDownDataTransferEventListener extends EventListener {
 	
 	/** 
 	* @Title: downDataTransferEvent 
-	* @Description: TODO 下行数据传输事件监听的处理
+	* @Description: 下行数据传输事件监听的处理
 	* @param event     
 	* @return void
 	* @throws 

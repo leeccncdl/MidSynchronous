@@ -26,7 +26,6 @@ public class ETaskManagerEvent extends EventObject {
 		
 		super(source);
 		this.taskDescription = taskDescription;
-		// TODO Auto-generated constructor stub
 	}
 
 }

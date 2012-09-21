@@ -48,7 +48,7 @@ public class StSyncStateDistribute extends Thread{
 	
 	/** 
 	* @Title: stateDiatribute 
-	* @Description: TODO 状态分发      
+	* @Description: 状态分发      
 	* @return void
 	* @throws 
 	*/ 
@@ -60,7 +60,6 @@ public class StSyncStateDistribute extends Thread{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		if(log.isDebugEnabled()) {
 			log.debug("同步状态分发线程运行！"+Thread.currentThread().getName());
 		}

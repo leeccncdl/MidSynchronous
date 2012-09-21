@@ -111,7 +111,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	/******************************作为监听器，处理触发事件的方法*********************************/
 	@Override
 	public void updateDataEvent(EUpdateDataEvent event) {
-		// TODO Auto-generated method stub
+
 		EUpdateDataEvent.UpdateDataEveDescription eveDescription = event.getUpDateDataEventDescription();
 		SyncTaskDescription taskDescription = event.getTaskDescription();
 		switch (eveDescription) {
@@ -135,7 +135,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	@Override
 	public void upDataTransferEvent(EUpDataTransferEvent event) {
-		// TODO Auto-generated method stub
+
 		EUpDataTransferEvent.UpDataTraEveDescription eveDescription = event.getUpDatTraEveDescription();
 		SyncTaskDescription taskDescription = event.getTaskTescription();
 		switch (eveDescription) {
@@ -170,14 +170,14 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 
 	@Override
 	public void taskManagerEvent(ETaskManagerEvent event) {
-		// TODO Auto-generated method stub
+
 		SyncTaskDescription taskDescription = event.getTaskDescription();
 		putInTask(taskDescription);
 	}
 
 	@Override
 	public void stateDistributeEvent(EStateDistributeEvent event) {
-		// TODO Auto-generated method stub
+
 		SyncTaskDescription description = event.getDistributeTaskDescription();
 		stateDistribute(description);
 		
@@ -185,7 +185,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 
 	@Override
 	public void downDataTransferEvent(EDownDataTransferEvent event) {
-		// TODO Auto-generated method stub
+
 		EDownDataTransferEvent.DownDataTraEveDescription eveDescription = event.getEveDescription();
 		SyncTaskDescription taskDescription = event.getTaskDescription(); 
 		switch (eveDescription) {

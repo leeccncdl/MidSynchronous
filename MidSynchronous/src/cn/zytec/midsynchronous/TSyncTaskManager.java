@@ -125,7 +125,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	
 	@Override
 	public boolean update(SyncTaskDescription description) {
-		// TODO Auto-generated method stub
 		if(log.isDebugEnabled()) {
 			log.debug("UPDATE********************************");
 		}
@@ -176,7 +175,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	
 	@Override
 	public boolean updateTaskState(String strTaskId, SyncTaskDescription.SynTaskState state) {
-		// TODO Auto-generated method stub
 		List<SyncTaskDescription> list = taskDescriptions.getArrTaskDescriptions(); 
 		SyncTaskDescription description = null;
 		for (int i = 0, size = list.size(); i < size; i++) {
@@ -193,7 +191,6 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	
 	@Override
 	public boolean delete(SyncTaskDescription taskDescription) {
-		// TODO Auto-generated method stub
 		if(taskDescriptions.exists(taskDescription.getTaskId())) {
 			//删除数据传输完成的文件
 			taskDescriptions.remove(taskDescription.getTaskId());
