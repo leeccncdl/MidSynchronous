@@ -41,6 +41,13 @@ public class AppFileUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			inReader.close();
+			ins.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return sb.toString();
 	}
