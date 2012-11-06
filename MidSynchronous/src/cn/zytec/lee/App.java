@@ -41,7 +41,7 @@ public class App extends Application {
 	/**
 	 * 服务器访问地址
 	 */
-	public static final String HOST = "http://192.168.4.117:8080/MidSynchronous/servlet/ServletEntrance";
+	public static final String HOST = "http://192.168.6.82:8080/MidSynchronous/servlet/ServletEntrance";
 	
 	/**
 	 * 服务器连接和返回超时时间

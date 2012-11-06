@@ -247,6 +247,13 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 			e.printStackTrace();
 		}
 		TSyncTaskDescriptions taskDescriptions = new Gson().fromJson(sb.toString(), TSyncTaskDescriptions.class);
+		try {
+			ins.close();
+			inReader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return taskDescriptions;
 		
 	}
