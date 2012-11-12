@@ -1,8 +1,15 @@
 package cn.zytec.midsynchronous;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import cn.zytec.lee.App;
 import cn.zytec.lee.AppLogger;
 import cn.zytec.midsynchronous.client.ISyncDataUpdate;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
+import cn.zytec.midsynchronous.utils.AppFileUtils;
 
 /**
    * @ClassName  ClientSyncController
@@ -296,7 +303,20 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		} else {
 			/*******************传的参数还需要确定*************************/
 			//data字符串 资源文件字符串List
-			dataUpdate.clientDataUpdate("",null);
+			Map<String, SyncFileDescription> fileInfo = taskDescription.getFileInfo();
+			List<String> sourceFilesName = new ArrayList<String>();
+			String dataString = "";
+			for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
+				String key = item.getKey();
+				System.out.println("fileName---------------" + key);
+				boolean isSourceFile = !key.endsWith(App.DATAFILETAG);
+				if(isSourceFile) {
+					sourceFilesName.add(item.getKey());
+				} else {
+					dataString =AppFileUtils.readFile(App.context, key);
+				}
+			}
+			dataUpdate.clientDataUpdate(dataString,sourceFilesName);
 		}
 	}
 	
