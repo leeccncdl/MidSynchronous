@@ -2,9 +2,6 @@ package cn.zytec.midsynchronous;
 
 import java.util.EventObject;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 /**
    * @ClassName: EDownDataTransferEvent
    * @Description: 下行同步数据传输事件

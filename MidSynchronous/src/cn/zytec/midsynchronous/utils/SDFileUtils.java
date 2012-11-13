@@ -107,7 +107,7 @@ public class SDFileUtils {
 
 	public boolean write2SD(String dir, String fileName, byte[] bytes,
 			long offset) {
-		System.out.println("FFFFFFFFFFFfileName: "+fileName);
+		System.out.println("fileName: "+fileName);
 		if (bytes == null) {
 			return false;
 		}
@@ -285,7 +285,7 @@ public class SDFileUtils {
 	public long getFileSize(String dir,String fileName,String mode) {
 		long length = 0;
 		File file = new File(SDCardRoot + dir + File.separator + fileName);
-		System.out.println("EEEEEEEEEEEEE"+file.exists());
+		System.out.println("file.exists："+file.exists());
 		length = file.length();
 
 		return length;

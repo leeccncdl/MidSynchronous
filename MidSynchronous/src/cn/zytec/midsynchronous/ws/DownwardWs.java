@@ -41,7 +41,7 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return "";
 			}
@@ -54,7 +54,7 @@ public class DownwardWs {
 				System.out.println(TAG+"下行申请Session过期");
 			}
 		} catch (IOException e) {
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"http异常"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
@@ -94,7 +94,7 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return null;
 			}
@@ -108,7 +108,7 @@ public class DownwardWs {
 			}
 			//1成功  -1验证失败  -2session过期
 		} catch (IOException e) {
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"Http异常"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
@@ -144,7 +144,7 @@ public class DownwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
@@ -157,7 +157,7 @@ public class DownwardWs {
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			}
 		} catch (IOException e) {
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"Http异常"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			e.printStackTrace();
 		}

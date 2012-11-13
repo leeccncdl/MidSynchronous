@@ -1,19 +1,14 @@
 package cn.zytec.midsynchronous.ws;
 
 import java.io.IOException;
-import java.util.Date;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-
-
 import cn.zytec.lee.App;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.client.ISyncStateMonitor;
-import cn.zytec.midsynchronous.utils.AppFileUtils;
 import cn.zytec.midsynchronous.utils.Base64;
 
 public class UpwardWs {
@@ -39,14 +34,14 @@ public class UpwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return "";
 			} 
 //			httpclient.executeMethod(postMethod);
 			token = postMethod.getResponseBodyAsString();
 		} catch (IOException e) {
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"Http异常"+e.getClass().getName());
 			e.printStackTrace();
 		} finally {
 			if(postMethod!=null) {
@@ -83,20 +78,20 @@ public class UpwardWs {
 		postMethod.addParameters(postData);
 
 		try {
-			Date d1 = new Date();
+//			Date d1 = new Date();
 			int statusCode = httpclient.executeMethod(postMethod);
-			Date d2 = new Date();
+//			Date d2 = new Date();
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
 			returnString = postMethod.getResponseBodyAsString();
 			
-			System.out.println("时间差：：：：：："+AppFileUtils.getDateDiff(d2,d1));
+//			System.out.println("时间差：：：：：："+AppFileUtils.getDateDiff(d2,d1));
 			
 		} catch (IOException e) {
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"Http异常"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
@@ -104,13 +99,13 @@ public class UpwardWs {
 		if(returnString.equals("1")) {
 			return true;
 		} else if(returnString.equals("-1")) {
-			//巴拉巴拉巴拉 用户验证失败
-			System.out.println("HHHHHHHHHHHHHHHHHHHHH"+"用户验证失败");
+			//用户验证失败
+			System.out.println(TAG+"用户验证失败");
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_AUTH_FAIL);
 			return false;
 		} else if(returnString.equals("-2")) {
 			//session 过期
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+"Session过期");
+			System.out.println(TAG+"Session过期");
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_SESSION_INVALID);
 			return false;
 		}
@@ -136,7 +131,7 @@ public class UpwardWs {
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
-				System.out.println("HHHHHHHHHHHHHHHHHHHttp错误状态码："+statusCode);
+				System.out.println(TAG+"Http错误状态码："+statusCode);
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return false;
 			}
@@ -144,12 +139,12 @@ public class UpwardWs {
 			excuteState = (postMethod.getResponseBodyAsString().equals("1")?true:false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("HHHHHHHHHHHHHHHHHHHH"+e.getClass().getName());
+			System.out.println(TAG+"Http异常"+e.getClass().getName());
 			ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 			e.printStackTrace();
 		}
 		postMethod.releaseConnection();
-		System.out.println("UUUUUUUUUUUUUUUUUUUUUUUU上行完成请求结束"+ excuteState);
+		System.out.println(TAG+"上行完成请求结束"+ excuteState);
 		return excuteState;
 	}
 }
