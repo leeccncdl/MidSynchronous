@@ -244,6 +244,10 @@ public class DSyncDownDataTransfer extends Thread {
 			String token, SyncTaskDescription description, boolean isSourceFile) {
 		
 		/*******************断点相关处理*********************/
+		//文件长度是否为零判断，如果为零不下载该文件，注意数据文件也不可为零，如果么就有内容，可随意传递几个字符
+		if(fileDes.getFileSize() == 0) {
+			return true;
+		}
 		long transferSize = fileDes.getTransSize();
 		byte[] buffer = null;
 		int alreadyTransTimes = (int)transferSize/App.EVERYTIMETRANSSIZE;

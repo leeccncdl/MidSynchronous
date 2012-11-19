@@ -1,5 +1,6 @@
 package cn.zytec.midsynchronous.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import android.content.Context;
@@ -20,8 +22,11 @@ public class AppFileUtils {
 	private static Object lock = new Object();
 
 	public static String readFile(Context context, String fileName) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
+		String s = "";
 		FileInputStream ins = null;
+		BufferedReader bufferedReader = null; 
+		InputStreamReader inReader = null;
 		try {
 
 			ins = context.openFileInput(fileName);
@@ -30,20 +35,34 @@ public class AppFileUtils {
 			e.printStackTrace();
 		}
 
-		InputStreamReader inReader = new InputStreamReader(ins);
-
-		int c;
 		try {
-			while ((c = inReader.read()) != -1) {
-				sb.append((char) c);
-			}
-		} catch (IOException e) {
+			inReader = new InputStreamReader(ins,"UTF-8");
+			bufferedReader = new BufferedReader(inReader);
+		} catch (UnsupportedEncodingException e2) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e2.printStackTrace();
 		}
+        try {
+			if ((s = bufferedReader.readLine()) != null) {  
+				sb.append(s);  
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+//		int c;
+//		try {
+//			while ((c = inReader.read()) != -1) {
+//				sb.append((char) c);
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		try {
 			inReader.close();
 			ins.close();
+			bufferedReader.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();

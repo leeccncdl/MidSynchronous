@@ -17,6 +17,7 @@ public class DownwardWs {
 	
 	
 	private static HttpClient httpclient = new HttpClient();
+	
 	private static final String TAG = "TAG:DownwardWs";
 	
 	/** 
@@ -31,6 +32,7 @@ public class DownwardWs {
 		String jsonTask = "";
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		NameValuePair[] postData = new NameValuePair[3];
@@ -78,6 +80,7 @@ public class DownwardWs {
 		System.out.println(TAG+" strToken:"+strToken+" Offset:"+lOffset+"~~~~~~");
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		byte[] byteArrayData = null;
 		String response = null;
 		
@@ -133,6 +136,7 @@ public class DownwardWs {
 	public static boolean DownwardFinish (String strToken) {
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		String excuteState = null;
 		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");

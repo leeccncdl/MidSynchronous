@@ -19,7 +19,7 @@ public class UpwardWs {
 		
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
-		
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		String token = null;
 		PostMethod postMethod = new PostMethod(App.HOST);
 		postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
@@ -58,7 +58,7 @@ public class UpwardWs {
 	public static boolean UpwardTransmit (String strToken, String fileName,long lOffset, byte[] buffer) {
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
-		
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		System.out.println(TAG +" fileName:"+fileName+" Offset:"+lOffset+"~~~~~~");
 		
 		String returnString = null;
@@ -116,7 +116,7 @@ public class UpwardWs {
 		
 		httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(App.TIMEOUT);
 		httpclient.getHttpConnectionManager().getParams().setSoTimeout(App.TIMEOUT);
-		
+		httpclient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
 		boolean excuteState = false;
 
 		String btra = bTrash?"true":"false";

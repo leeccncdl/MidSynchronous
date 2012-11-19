@@ -310,12 +310,13 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 				String key = item.getKey();
 				System.out.println("fileName---------------" + key);
 				boolean isSourceFile = !key.endsWith(App.DATAFILETAG);
-				if(isSourceFile) {
+				if(isSourceFile&&fileInfo.get(key).getFileSize()!=0) {//加入文件长度是否为零判断
 					sourceFilesName.add(item.getKey());
 				} else {
 					dataString =AppFileUtils.readFile(App.context, key);
 				}
 			}
+			
 			dataUpdate.clientDataUpdate(dataString,sourceFilesName);
 		}
 	}
