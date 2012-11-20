@@ -1,7 +1,9 @@
 package cn.zytec.midsynchronous.client;
 
+import cn.zytec.lee.App;
 import cn.zytec.midsynchronous.ClientSyncController;
 import cn.zytec.midsynchronous.SyncTaskDescription;
+import cn.zytec.midsynchronous.utils.AppFileUtils;
 
 /**
    * 任务控制类，控制任务的启动，应用程序的模块注册
@@ -18,7 +20,6 @@ public class TaskControl {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void startUpTransTask(SyncTaskDescription taskDescription) {
 		client.initSyncUpDataTask(taskDescription);
 	}
@@ -29,7 +30,6 @@ public class TaskControl {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void startDownTransTask(SyncTaskDescription taskDescription) {
 		client.initSyncDownDataTask(taskDescription);
 	}
@@ -40,13 +40,18 @@ public class TaskControl {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void startUnfinishedTask() {
 		client.startUnfinishedTask();
 	}
 	
-	public void stopAllTask() {
-		
+	
+	/** 
+	* @Description: 清空所有任务（删除任务描述文件），如果需要调用该方法，应该在启动任务执行之前调用，避免中间件在执行过程中删除文件可能产生异常  
+	* @return void    
+	* @throws 
+	*/ 
+	public void clearAllTask() {
+		AppFileUtils.deleteFile(App.context, App.DESCRIPTIONFILENAME);
 	}
 	
 	/** 
@@ -55,7 +60,6 @@ public class TaskControl {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void registSyncStateMonitor(ISyncStateMonitor stateMonitor) {
 		ClientSyncController.registSyncStateMonitor(stateMonitor);
 	}
@@ -66,7 +70,6 @@ public class TaskControl {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void registSyncDataUpdate(ISyncDataUpdate dataUpdate) {
 		client.registSyncDataUpdate(dataUpdate);
 	}

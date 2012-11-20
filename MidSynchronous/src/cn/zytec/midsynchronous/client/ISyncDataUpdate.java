@@ -2,8 +2,6 @@ package cn.zytec.midsynchronous.client;
 
 import java.util.List;
 
-
-
 /**
    * @ClassName: ISyncDataUpdate
    * @Description: 同步数据更新接口，应用系统同步数据更新器需要继承该接口

@@ -15,8 +15,6 @@ import android.os.Environment;
 public class SDFileUtils {
 	private String SDCardRoot;
 	private String SDStateString;
-	
-//	private static byte[] buffer = new byte[102400];
 
 	public SDFileUtils() {
 		// 得到当前外部存储设备的目录
@@ -105,6 +103,15 @@ public class SDFileUtils {
 	}
 
 
+	/** 
+	* @Description: 随即写入文件
+	* @param dir 目录
+	* @param fileName 文件名
+	* @param bytes 写入字节
+	* @param offset 指定偏移量  
+	* @return boolean 执行状态
+	* @throws 
+	*/ 
 	public boolean write2SD(String dir, String fileName, byte[] bytes,
 			long offset) {
 		System.out.println("fileName: "+fileName);
@@ -138,7 +145,7 @@ public class SDFileUtils {
 	}
 
 	/**
-	 * 将一个字节数组数据写入到SD卡中
+	 * 将一个字节数组数据写入到SD卡中，追加写入
 	 */
 	public boolean write2SD(String dir, String fileName, byte[] bytes,
 			boolean append) {
@@ -179,15 +186,14 @@ public class SDFileUtils {
 	 * 
 	 * @param dir
 	 * @param fileName
-	 * @param offset
-	 * @param length
+	 * @param offset 偏移量
+	 * @param length 长度
 	 * @return byte[]
 	 * @throws
 	 */
 
 	public boolean readFromSD(String dir, String fileName, long offset,
 			int length,byte[] buffer) {
-//		byte[] buffer = new byte[length];
 		File file = new File(SDCardRoot + dir + File.separator + fileName);
 		RandomAccessFile raFile = null;
 		try {
@@ -195,10 +201,8 @@ public class SDFileUtils {
 			raFile.seek(offset);
 			raFile.read(buffer, 0, length);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
@@ -210,7 +214,7 @@ public class SDFileUtils {
 	}
 
 	/***
-	 * 从sd卡中读取文件，并且以字节流返回
+	 * 从sd卡中读取文件，并且以字节流返回（所有内容）
 	 * 
 	 * @param dir
 	 * @param fileName
@@ -228,10 +232,8 @@ public class SDFileUtils {
 			inputStream.read(data);
 			return data;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
@@ -247,7 +249,7 @@ public class SDFileUtils {
 	}
 
 	/**
-	 * 将一个InputStream里面的数据写入到SD卡中 ,从网络上读取图片
+	 * 将一个InputStream里面的数据写入到SD卡中
 	 */
 	public File write2SDFromInput(String dir, String fileName, InputStream input) {
 		File file = null;
@@ -268,7 +270,6 @@ public class SDFileUtils {
 				output.flush();
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
 			try {
@@ -283,11 +284,11 @@ public class SDFileUtils {
 	}
 	
 	public long getFileSize(String dir,String fileName,String mode) {
+
 		long length = 0;
 		File file = new File(SDCardRoot + dir + File.separator + fileName);
-		System.out.println("file.exists："+file.exists());
 		length = file.length();
-
+//		System.out.println("Get File Size: " + "FileName: " + dir+fileName+"  " +length);
 		return length;
 	}
 }

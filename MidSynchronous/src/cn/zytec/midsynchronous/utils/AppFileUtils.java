@@ -25,57 +25,40 @@ public class AppFileUtils {
 		StringBuilder sb = new StringBuilder();
 		String s = "";
 		FileInputStream ins = null;
-		BufferedReader bufferedReader = null; 
+		BufferedReader bufferedReader = null;
 		InputStreamReader inReader = null;
 		try {
-
 			ins = context.openFileInput(fileName);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			inReader = new InputStreamReader(ins,"UTF-8");
+			inReader = new InputStreamReader(ins, "UTF-8");
 			bufferedReader = new BufferedReader(inReader);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (UnsupportedEncodingException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-        try {
-			if ((s = bufferedReader.readLine()) != null) {  
-				sb.append(s);  
+		try {
+			if ((s = bufferedReader.readLine()) != null) {
+				sb.append(s);
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} 
-//		int c;
-//		try {
-//			while ((c = inReader.read()) != -1) {
-//				sb.append((char) c);
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		}
 		try {
 			inReader.close();
 			ins.close();
 			bufferedReader.close();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+//		System.out.println("Read Context file: "+"fileName:"+fileName + 
+//												"ToString: "+sb.toString());
 		return sb.toString();
 	}
 
 	public static boolean readFile(Context context, String fileName,
 			long offset, int length, String mode, boolean isSourceFile,
 			byte[] buffer) {
-		// byte[] buffer = new byte[length];
-		// SDFileUtils sd = new SDFileUtils();
 
 		if (!isSourceFile) {
 			RandomAccessFile ra = null;
@@ -84,21 +67,18 @@ public class AppFileUtils {
 						mode);
 
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				ra.seek(offset);
 				ra.read(buffer, 0, length);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 			try {
 				ra.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
@@ -107,7 +87,6 @@ public class AppFileUtils {
 					buffer);
 		}
 		return true;
-		// return buffer;
 	}
 
 	public static void writeFile(Context context, String fileName,
@@ -119,17 +98,13 @@ public class AppFileUtils {
 				os = context.openFileOutput(fileName, mode);
 
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				System.out.println("打开文件异常！");
 				e.printStackTrace();
 			}
 			OutputStreamWriter outWriter = new OutputStreamWriter(os);
 			try {
 				outWriter.write(writeString);
-				System.out.println("写入任务列表文件**************");
-				// System.out.println(writeString);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.out.println("写入文件异常");
 				e.printStackTrace();
 			}
@@ -144,10 +119,12 @@ public class AppFileUtils {
 
 			}
 		}
+//		System.out.println("Write Context File:" + "fileName " + fileName
+//							+" writeString: " + writeString);
 	}
 
 	/**
-	 * 写入文件(追加方式)。随机写入?
+	 * 写入文件(追加方式)。
 	 * 
 	 * @param context
 	 * @param fileName
@@ -165,10 +142,8 @@ public class AppFileUtils {
 
 		SDFileUtils sd = new SDFileUtils();
 		if (isSourceFile) {// 是资源文件，SD卡文件操作
-			// sd.write2SD(DOWNSOURCEFILEPATH, fileName, writeByteArr,
-			// Context.MODE_APPEND);
 			sd.write2SD(App.DOWNSOURCEFILEPATH + sourceFileDir, fileName,
-					writeByteArr, true);
+					writeByteArr, true);//追加方式
 		} else {// 不是资源文件
 			FileOutputStream os = null;
 			try {
@@ -181,12 +156,18 @@ public class AppFileUtils {
 				os.write(writeByteArr);
 				os.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/** 
+	* @Description: 删除应用目录下的文件 
+	* @param context
+	* @param fileName 文件名
+	* @return void    
+	* @throws 
+	*/ 
 	public static void deleteFile(Context context, String fileName) {
 		File deleteFile = null;
 		deleteFile = context.getFileStreamPath(fileName);
@@ -218,6 +199,14 @@ public class AppFileUtils {
 		return length;
 	}
 
+	/** 
+	* @Description: 测试执行时间的方法，与本类无关，只是放在这里 
+	* @param newDate
+	* @param oldDate
+	* @return 
+	* @return String    
+	* @throws 
+	*/ 
 	public static String getDateDiff(Date newDate, Date oldDate) {
 		long l = newDate.getTime() - oldDate.getTime();
 		long day = l / (24 * 60 * 60 * 1000);

@@ -120,7 +120,6 @@ public class DownwardWs {
 		try {
 			byteArrayData = Base64.decode(response);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return byteArrayData;

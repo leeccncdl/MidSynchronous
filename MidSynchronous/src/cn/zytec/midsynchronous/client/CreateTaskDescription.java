@@ -19,9 +19,7 @@ import cn.zytec.midsynchronous.utils.AppFileUtils;
    * @modify date: 2012-8-29 下午03:55:42
    */
 public class CreateTaskDescription {
-//	private AppLogger log = AppLogger.getLogger("CreateTaskDescription");
-	//上行任务的数据文件存储在一个固定的SD卡文件夹路径。
-//	private static final String SDCARDSOURCEDIR = "";
+
 	/** 
 	* 将传入的json字符串写成同步传输的数据文件，同资源文件一起创建成任务描述文件。
 	* @param context
@@ -30,16 +28,13 @@ public class CreateTaskDescription {
 	* @return SyncTaskDescription 同步中间件的任务描述对象
 	* @throws 
 	*/ 
-	
 	public static SyncTaskDescription createUpDescription(Context context,List<String> sourceFilesPaths,String jsonString) {
 //		System.out.println(TAG+"PACKING JSONSTRING:"+jsonString);
 		String fileName = createPackingFileName();
 		//将json串写入任务data文件
 		AppFileUtils.writeFile(context, fileName, jsonString,Context.MODE_PRIVATE);
-
 		//构建任务描述内容
 		Map<String, SyncFileDescription> fileInfo = new HashMap<String, SyncFileDescription>();
-		
 		SyncFileDescription fileDes = null;
 		for(int i =0,length = sourceFilesPaths.size();i<length;i++) {
 			fileDes = new SyncFileDescription(sourceFilesPaths.get(i), AppFileUtils.getFileSize(App.context, sourceFilesPaths.get(i), "r"), 0, "false");
@@ -48,7 +43,6 @@ public class CreateTaskDescription {
 		fileDes = new SyncFileDescription(fileName, AppFileUtils.getFileSize(App.context, fileName, "r"), 0, "false");
 		fileInfo.put(fileName, fileDes);
 		
-//		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		SyncTaskDescription taskDescription = new SyncTaskDescription("", "associateId",007, 
 				null, "condition",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), SyncTaskDescription.UPTASK, null, fileInfo);
 		return taskDescription;
@@ -60,7 +54,6 @@ public class CreateTaskDescription {
 	* @return SyncTaskDescription 下行任务的描述对象
 	* @throws 
 	*/ 
-	
 	public static SyncTaskDescription createDownDescription(String condition) {
 		SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		SyncTaskDescription taskDescription = new SyncTaskDescription("", "associateId",8, 
@@ -71,7 +64,7 @@ public class CreateTaskDescription {
 	
 	
 	/** 
-	* 生成打包数据文件的文件名，命名方式为  UP_+ 生成时间的字符串 + .datafile    
+	* 生成字符串打包数据文件的文件名，命名方式为  UP_+ 生成时间的字符串 + .datafile    
 	* @return String 返回生成的文件名
 	* @throws 
 	*/ 

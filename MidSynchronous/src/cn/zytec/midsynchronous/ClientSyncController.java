@@ -35,7 +35,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	private static ISyncStateMonitor stateMonitor = null;
 	
 	/** 
-	* 向客户端同步控制器注册同步数据更新器
+	* 注册同步数据更新器
 	* @param dataUpdate  要注册的数据更新器对象
 	* @return void
 	* @throws 
@@ -45,7 +45,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	}
 	
 	/** 
-	* 向客户端同步控制器注册同步状态监控器 
+	* 注册同步状态监控器 
 	* @param stateMonitor 要注册的状态监控器对象    
 	* @return void
 	* @throws 
@@ -285,7 +285,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 				log.debug("应用程序没有注册状态监控组件");
 			}
 		} else {
-			/***************这里传的参数还需要修改，应该携带更多的任务信息****************/
+			/***************如果需要更多的任务信息，还需修改具体内容****************/
 			stateMonitor.clientStateUpdate(description.getTaskState());
 		}
 	}
@@ -301,14 +301,13 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 		if(dataUpdate==null) {
 			System.out.println("应用程序没有注册程序更新组件");
 		} else {
-			/*******************传的参数还需要确定*************************/
 			//data字符串 资源文件字符串List
 			Map<String, SyncFileDescription> fileInfo = taskDescription.getFileInfo();
 			List<String> sourceFilesName = new ArrayList<String>();
 			String dataString = "";
 			for (Entry<String, SyncFileDescription> item : fileInfo.entrySet()) {
 				String key = item.getKey();
-				System.out.println("fileName---------------" + key);
+				System.out.println("updateExcute：fileName---------------" + key);
 				boolean isSourceFile = !key.endsWith(App.DATAFILETAG);
 				if(isSourceFile&&fileInfo.get(key).getFileSize()!=0) {//加入文件长度是否为零判断
 					sourceFilesName.add(item.getKey());
@@ -457,7 +456,7 @@ public class ClientSyncController implements IDownDataTransferEventListener,ISta
 	
 	/** 
 	* 数据更新错误
-	* @param taskDescription     
+	* @param taskDescription
 	* @return void
 	* @throws 
 	*/ 

@@ -17,6 +17,7 @@ public class AppStateMonitor implements ISyncStateMonitor {
 		if(log.isDebugEnabled()) {
 			log.debug("应用程序状态更新"+taskState);
 		}
+		//分别对不同的中间件返回状态进行不同的处理
 		switch(taskState) {
 		case DRAFT:
 			break;

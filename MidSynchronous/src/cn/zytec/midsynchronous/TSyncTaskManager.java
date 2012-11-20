@@ -166,7 +166,7 @@ public class TSyncTaskManager implements ISyncTaskStorager {
 	}
 
 	/**
-	* 更新任务状态，这里做的方式有点多余，其实可以直接修改任务描述对象的状态即可。这样做牺牲了效率，提高了可读性和可理解性。
+	* 更新任务状态，这里做的方式有点多余，其实可以直接修改任务描述对象的状态即可。
 	* @param strTaskId
 	* @param state
 	* @return

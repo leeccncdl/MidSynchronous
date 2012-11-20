@@ -26,7 +26,6 @@ public interface ISyncStateMonitor {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void clientStateUpdate(SyncTaskDescription.SynTaskState taskState);
 	
 	/** 
@@ -35,7 +34,6 @@ public interface ISyncStateMonitor {
 	* @return void    
 	* @throws 
 	*/ 
-	
 	public void clientStateException (ISyncStateMonitor.StateExceptionCode exceptionCode);
 
 }

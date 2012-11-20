@@ -24,6 +24,10 @@ public class MidSynchronousActivity extends Activity {
 
 	private AppLogger log = AppLogger.getLogger(MidSynchronousActivity.class);
 
+	private String gsonString;//json格式的数据字符串
+	private List<String> sourceFiles;//资源文件列表
+	private TaskControl taskControl;
+	
 	Thread th;
 	Button b1;
 	Button b2;
@@ -41,8 +45,8 @@ public class MidSynchronousActivity extends Activity {
 		testArr.add(testObj);
 		testArr.add(testObj2);
 		Gson gson = new Gson();
-		final String gsonString = gson.toJson(testArr);
-		final List<String> sourceFiles = new ArrayList<String>();
+		gsonString = gson.toJson(testArr);
+		sourceFiles = new ArrayList<String>();
 		sourceFiles.add("sourcefile1.png");
 		sourceFiles.add("sourceFile4.jpg");
 //		sourceFiles.add("sourcefile2.JPG");
@@ -51,13 +55,13 @@ public class MidSynchronousActivity extends Activity {
 		b1 = (Button) findViewById(R.id.add_upTask);
 		b2 = (Button) findViewById(R.id.add_downTask);
 		b3 = (Button) findViewById(R.id.excute_Task);
-
 		
-		final TaskControl taskControl = new TaskControl();
+		taskControl = new TaskControl();
 		// 注册数据更新和状态监控组件
 		taskControl.registSyncDataUpdate(new AppDataUpdate());
 		taskControl.registSyncStateMonitor(new AppStateMonitor());
 		
+		//网络状态检查
 		if(!CheckNetworkUtils.checkWifi()) {
 			if(!CheckNetworkUtils.check3G()) {
 				CheckNetworkUtils.wirelessSettingAct();
@@ -66,11 +70,10 @@ public class MidSynchronousActivity extends Activity {
 			}
 		}
 		
+		//添加一个上行传输任务，加载并添加到之前的任务列表，任务按顺序执行
 		b1.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-
 				th = new Thread() {
 					public void run() {
 						taskControl.startUpTransTask(CreateTaskDescription
@@ -85,6 +88,7 @@ public class MidSynchronousActivity extends Activity {
 			}
 		});
 
+		//添加一个下行传输任务，加载并添加到之前的任务列表，任务按顺序执行
 		b2.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -101,7 +105,7 @@ public class MidSynchronousActivity extends Activity {
 				th.start();
 			}
 		});
-
+		//启动传输任务，加载之前未执行完成的上行下行任务，任务按顺序执行
 		b3.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -118,6 +122,7 @@ public class MidSynchronousActivity extends Activity {
 				th.start();
 			}
 		});
+		
 		// 创建上行，下行资源文件夹
 		// SDFileUtils sd = new SDFileUtils();
 		// sd.creatSDDir("MidSync"+File.separator+"downLoadsourceFile");
