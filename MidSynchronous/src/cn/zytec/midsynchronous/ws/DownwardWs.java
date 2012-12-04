@@ -1,6 +1,9 @@
 package cn.zytec.midsynchronous.ws;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -94,6 +97,9 @@ public class DownwardWs {
 		postData[4] = new NameValuePair("requestType", "DownwardTransmit");
 		postMethod.addParameters(postData);	
 		
+		
+		
+		
 		try {
 			int statusCode = httpclient.executeMethod(postMethod);
 			if(statusCode != HttpStatus.SC_OK) {
@@ -101,7 +107,19 @@ public class DownwardWs {
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.HTTP_STATUS_EXCEP);
 				return null;
 			}
+			
+//			InputStream resStream = postMethod.getResponseBodyAsStream();
+//			BufferedReader br = new BufferedReader(new InputStreamReader(resStream));
+//			StringBuffer resBuffer = new StringBuffer();
+//	        String resTemp = "";  
+//	        while((resTemp = br.readLine()) != null){  
+//	            resBuffer.append(resTemp);  
+//	        }  
+//	        response = resBuffer.toString();
+//	        resStream.close();
+//	        br.close();
 			response = postMethod.getResponseBodyAsString();
+	        
 			if(response.equals("-1")) {
 				System.out.println(TAG+"下行传输错误");
 				ClientSyncController.stateExceptionDistribte(ISyncStateMonitor.StateExceptionCode.SER_AUTH_FAIL);
