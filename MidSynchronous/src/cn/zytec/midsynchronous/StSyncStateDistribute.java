@@ -27,15 +27,15 @@ public class StSyncStateDistribute extends Thread{
 	public void addStateDistribute(SyncTaskDescription description) {
 		synchronized (this) {
 			if(this.getState() == Thread.State.WAITING) {
-				if(distributeDescriptions.size()!=0) {
-					for(int i=0;i<distributeDescriptions.size();i++) {
-						if(description != distributeDescriptions.get(i)) {//直接比较地址，判断是不是同一个对象
-							distributeDescriptions.add(description);
-						}
-					}
-				} else {
+//				if(distributeDescriptions.size()!=0) {
+//					for(int i=0;i<distributeDescriptions.size();i++) {
+//						if(description != distributeDescriptions.get(i)) {//直接比较地址，判断是不是同一个对象
+//							distributeDescriptions.add(description);
+//						}
+//					}
+//				} else {
 					distributeDescriptions.add(description);
-				}
+//				}
 				if(log.isDebugEnabled()) {
 					log.debug("任务状态分发器：添加新的任务状态列表,添加时的状态为："+description.getTaskState()+Thread.currentThread().getName());
 				}

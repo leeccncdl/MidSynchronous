@@ -98,7 +98,7 @@ public class DSyncUpdateDataDispatch extends Thread {
 			//更新执行和更新完成需要返回值，需修改
 			updateExcute(description);
 			updateComplete(description);
-			updateError(description);
+//			updateError(description);
 			iterator.remove();
 		}
 		
